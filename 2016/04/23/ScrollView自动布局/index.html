@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>All Of Me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="+++title         = “ScrollView自动布局”tags         = [“UIScrollView”,”AutoLayout”]categories    = [“blog”]date        = “2015-05-10”+++
+该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的con">
+<meta property="og:type" content="article">
+<meta property="og:title" content="All Of Me">
+<meta property="og:url" content="http://yoursite.com/2016/04/23/ScrollView自动布局/index.html">
+<meta property="og:site_name" content="All Of Me">
+<meta property="og:description" content="+++title         = “ScrollView自动布局”tags         = [“UIScrollView”,”AutoLayout”]categories    = [“blog”]date        = “2015-05-10”+++
+该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的con">
+<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/3.png">
+<meta property="og:updated_time" content="2016-04-23T09:59:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="All Of Me">
+<meta name="twitter:description" content="+++title         = “ScrollView自动布局”tags         = [“UIScrollView”,”AutoLayout”]categories    = [“blog”]date        = “2015-05-10”+++
+该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的con">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="All Of Me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">All Of Me</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ScrollView自动布局" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/23/ScrollView自动布局/" class="article-date">
+  <time datetime="2016-04-23T03:32:55.000Z" itemprop="datePublished">2016-04-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>+++<br>title         = “ScrollView自动布局”<br>tags         = [“UIScrollView”,”AutoLayout”]<br>categories    = [“blog”]<br>date        = “2015-05-10”<br>+++</p>
+<h2 id="该篇文章将讲述对UIScrollView如何运用autoLayout-结合实例，根据显示的内容，自动调整scrollView的contentSize"><a href="#该篇文章将讲述对UIScrollView如何运用autoLayout-结合实例，根据显示的内容，自动调整scrollView的contentSize" class="headerlink" title="该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的contentSize"></a>该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的contentSize</h2><h3 id="新建工程"><a href="#新建工程" class="headerlink" title="新建工程"></a>新建工程</h3><h3 id="在Storyboard中的View-Controller的view中拖入一个scrollView-并在scrollView中添加一个UIView，层级关系如下图-包含所有添加的约束条件"><a href="#在Storyboard中的View-Controller的view中拖入一个scrollView-并在scrollView中添加一个UIView，层级关系如下图-包含所有添加的约束条件" class="headerlink" title="在Storyboard中的View Controller的view中拖入一个scrollView,并在scrollView中添加一个UIView，层级关系如下图(包含所有添加的约束条件)"></a>在Storyboard中的View Controller的view中拖入一个scrollView,并在scrollView中添加一个UIView，层级关系如下图(包含所有添加的约束条件)</h3><p><img style="display:block;width:80%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/1.png" alt="constrait"></p>
+<h3 id="为ScrollView-Scroll-View-和UIView-Content-View-添加限制条件"><a href="#为ScrollView-Scroll-View-和UIView-Content-View-添加限制条件" class="headerlink" title="为ScrollView(Scroll View)和UIView(Content View)添加限制条件"></a>为ScrollView(Scroll View)和UIView(Content View)添加限制条件</h3><ol>
+<li>为ScrollView添加相对于父视图的上下左右约束，如下图<br><img style="display:block;width:80%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/2.png" alt="constrait"></li>
+</ol>
+<blockquote>
+<p>这里的约束为左右边界和父视图相等，这里虽为-16，但是scrollView的的宽度和父视图是相等的，在添加leading 和trailing限制条件的时候，取消Constrain to margins选项，leading和trailing可以为0，效果和-16一样。这四个限制条件确定了scroll view的frame</p>
+</blockquote>
+<ol>
+<li>为Content View添加约束，如下图<br><img style="display:block;width:80%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/3.png" alt="constrait"></li>
+</ol>
+<blockquote>
+<p>分别添加Content View的leading，top,bottom,trailing限制条件，设置为和父视图相等(scroll view),这里看起来是设置content view在scroll view中的frame,  苹果公司对在scroll view中添加的这四个约束做了变化，它不是确定content view的尺寸，而是确定content view对于scroll view四周的留白。</p>
+<p>对content view添加width和Height的约束，scroll view的content size就是根据content view的size来确定的，所有在程序中动态改变content view的size的约束，scroll view的contentsize也会跟着动态变化（网上其他教程需要再新建一个 参照视图，将content view和参照视图的高宽设置为相等，以确定content view的高宽，这里的对content view的高宽所加的限制条件就代替了参照视图的作用）。</p>
+</blockquote>
+<h3 id="将Content-view的Height-Constraint限制拖入如VC中，并将Content-view拖入VC中"><a href="#将Content-view的Height-Constraint限制拖入如VC中，并将Content-view拖入VC中" class="headerlink" title="将Content view的Height Constraint限制拖入如VC中，并将Content view拖入VC中"></a>将Content view的Height Constraint限制拖入如VC中，并将Content view拖入VC中</h3><h3 id="在代码中动态改变content-view的高限制条件"><a href="#在代码中动态改变content-view的高限制条件" class="headerlink" title="在代码中动态改变content view的高限制条件"></a>在代码中动态改变content view的高限制条件</h3><pre><code>@interface ViewController ()
+@property (weak, nonatomic) IBOutlet UIView *contentView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightConstraint;
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.contentView.backgroundColor = [UIColor redColor];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.contentView.backgroundColor = [UIColor blueColor];
+        self.heightConstraint.constant = 200;
+    });
+}
+</code></pre><blockquote>
+<p>在4s的延时后，Content view的颜色改变，高的约束条件改变为200，scroll view的Contentsize 也会根据content view 当前的尺寸相应的将其Content size调整值200. 测试直接设置ContentView的frame，scrollview的Contentsize不会改变。</p>
+</blockquote>
+<h3 id="总结-scroll-view-添加一些控件，控件的内容从网路上取得，会根据网路上取得的内容改变控件的frame，运行scroll-view的这一特性，可以自动改变其Contentsize"><a href="#总结-scroll-view-添加一些控件，控件的内容从网路上取得，会根据网路上取得的内容改变控件的frame，运行scroll-view的这一特性，可以自动改变其Contentsize" class="headerlink" title="总结:scroll view 添加一些控件，控件的内容从网路上取得，会根据网路上取得的内容改变控件的frame，运行scroll view的这一特性，可以自动改变其Contentsize."></a>总结:scroll view 添加一些控件，控件的内容从网路上取得，会根据网路上取得的内容改变控件的frame，运行scroll view的这一特性，可以自动改变其Contentsize.</h3><p>提供两个源码例子</p>
+<p>第一个例子是以上教程的源码。<a href="https://github.com/JustinYangJing/Resource/raw/master/Image/ScrollViewAutoLayout/AutoLayoutScrollView.zip" target="_blank" rel="external">下载地址</a></p>
+<p>第二个例子是将contentView的改为UILabel,在延时后，增加label的text，label的frame和scroll view的contentsize都自动增加了。<a href="https://github.com/JustinYangJing/Resource/raw/master/Image/ScrollViewAutoLayout/auto.zip" target="_blank" rel="external">下载地址</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/23/ScrollView自动布局/" data-id="cip8iacq20000hc89rvsiuc3s" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/04/23/Xcode使用Cocoa Touch Framework新建Framework/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/02/10/创建私有库/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/06/08/IOS音频变成之变声处理/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/04/23/Xcode使用Cocoa Touch Framework新建Framework/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/04/23/ScrollView自动布局/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/10/创建私有库/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/10/lantern翻墙以及手机使用Http代理翻墙/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Justin Yang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
