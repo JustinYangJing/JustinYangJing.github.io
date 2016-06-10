@@ -118,7 +118,7 @@
 				
 				<section class="switch-part switch-part3">
 				
-					<div id="js-aboutme">我是谁，我从哪里来，我到哪里去？我就是我，是颜色不一样的吃货…</div>
+					<div id="js-aboutme">IOS软件工程师</div>
 				</section>
 				
 			</div>
@@ -200,7 +200,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="IOS音频编程之变声处理"><a href="#IOS音频编程之变声处理" class="headerlink" title="IOS音频编程之变声处理"></a>IOS音频编程之变声处理</h1><h3 id="需求：耳塞Mic实时录音，变声处理后实时输出"><a href="#需求：耳塞Mic实时录音，变声处理后实时输出" class="headerlink" title="需求：耳塞Mic实时录音，变声处理后实时输出"></a>需求：耳塞Mic实时录音，变声处理后实时输出</h3><hr>
-<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>###程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。<br>1）对AVAudioSession的一些设置</p>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><h3 id="程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。"><a href="#程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。" class="headerlink" title="程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。"></a>程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。</h3><p>1）对AVAudioSession的一些设置</p>
 <pre><code>NSError *error;
 self.session = [AVAudioSession sharedInstance];
 [self.session setCategory:AVAudioSessionCategoryPlayAndRecord error:&amp;error];
@@ -280,8 +280,7 @@ CheckError(AudioUnitInitialize(_toneUnit),
 </code></pre><blockquote>
 <p>注意<code>kAudioUnitScope_Output/kAudioUnitScope_Input</code>和<code>kOutput/kInput</code>的组合。设置输入输出使能时，Scope_Input下的kInput直接和Mic相连，所以是选用它们两;设置输出使能也类似。而设置音频的格式时，要选用Scope_Input下的kOutput和Scope_OutPut下的kInput,如果组合错误，为会返回-10865的错误码，意思说设置了只读属性，而在官方文档中也有说明,This hardware connection—at the input scope of element 1—is opaque to you. Your first access to audio data entering from the input hardware is at the output scope of element 1, output scope of element 0 is opaque。(<strong>疑问？在设置输入输出回调时以及Scope选择Input和Output以及Global都可以，但是官方文档中说<code>Your first access to audio data entering from the input hardware is at the output scope of element 1</code></strong>)</p>
 </blockquote>
-<p>##音频处理</p>
-<p>###预备知识<br>变声操作实际是对声音信号的频谱进行搬移，在时域中乘以一个三角函数相当于在频域上进行了频谱的搬移。但使得频谱搬移了±𝑓。由下图傅里叶变化公式说明<br><img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/2.png" alt="Fourier"><br>频谱搬移后，要把搬移的F(w-w。)的部分滤除。将声音的原始PCM放到Matlab中分析出频谱，然后进行搬移(<strong>实际上，我滤波这一步是失败的，还请小伙伴们告知我应该选一个怎样的滤波器</strong>)</p>
+<h2 id="音频处理"><a href="#音频处理" class="headerlink" title="音频处理"></a>音频处理</h2><h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><p>变声操作实际是对声音信号的频谱进行搬移，在时域中乘以一个三角函数相当于在频域上进行了频谱的搬移。但使得频谱搬移了±𝑓。由下图傅里叶变化公式说明<br><img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/2.png" alt="Fourier"><br>频谱搬移后，要把搬移的F(w-w。)的部分滤除。将声音的原始PCM放到Matlab中分析出频谱，然后进行搬移(<strong>实际上，我滤波这一步是失败的，还请小伙伴们告知我应该选一个怎样的滤波器</strong>)</p>
 <p>1）写一个专门手机原始声音数据的程序，将声音数据保存到模拟上(用模拟器收集的声音，方便直接将写入到沙盒中的文件拷出来)。</p>
 <p>2) 将声音数据用matlab读出来(注意模拟器和matlab处理数据时的大小端，专门把数据转换读出来看了，两边都应该是小端模式)，并分析和频移其频谱<br>matlab代码</p>
 <pre><code>FID=fopen(&apos;record.txt&apos;,&apos;r&apos;);
@@ -306,7 +305,7 @@ plot(f,abs(Y2(1:length(A)/2)));
 <p><strong>原始信号的频谱从0频开始?频率1000Hz后，虑除的就是小于1000hz的频率？实际在我的程序中对频谱只进行了200hz的搬移，那选一个大于200hz的IIR高通滤波器？</strong></p>
 <p>3）用matlab设计滤波器，并得到滤波器参数.我用matlab的fdatool工具设计了一个5阶的IIR高通滤波器，截止频率为200hz。导出参数，用<code>[Bb,Ba]=sos2tf(SOS,G);</code>得出滤波器参数。</p>
 <p>4）得到的Bb和Ba参数后，可以直接代入输入输出的差分方程得出滤波器的输出y(n)</p>
-<p>###音频输入输出回调函数处理<br>1）输入回调</p>
+<h3 id="音频输入输出回调函数处理"><a href="#音频输入输出回调函数处理" class="headerlink" title="音频输入输出回调函数处理"></a>音频输入输出回调函数处理</h3><p>1）输入回调</p>
 <pre><code>OSStatus inputRenderTone(
                      void *inRefCon,
                      AudioUnitRenderActionFlags     *ioActionFlags,
