@@ -6,31 +6,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>IOS音频编程之变声处理 | All Of Me</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="IOS音频编程之变声处理需求：耳塞Mic实时录音，变声处理后实时输出
-初始化程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。1）对AVAudioSession的一些设置
-NSError *error;
-self.session = [AVAudioSession sharedInstance];
-[self.session setCategory:AVAu">
+  <meta name="description" content="IOS音频编程之变声处理需求：耳塞Mic实时录音，变声处理后实时输出初始化程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。1）对AVAudioSession的一些设置">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IOS音频编程之变声处理">
 <meta property="og:url" content="http://yoursite.com/2016/06/09/IOS音频变成之变声处理/index.html">
 <meta property="og:site_name" content="All Of Me">
-<meta property="og:description" content="IOS音频编程之变声处理需求：耳塞Mic实时录音，变声处理后实时输出
-初始化程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。1）对AVAudioSession的一些设置
-NSError *error;
-self.session = [AVAudioSession sharedInstance];
-[self.session setCategory:AVAu">
+<meta property="og:description" content="IOS音频编程之变声处理需求：耳塞Mic实时录音，变声处理后实时输出初始化程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。1）对AVAudioSession的一些设置">
 <meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/3.png">
-<meta property="og:updated_time" content="2016-06-09T17:32:43.000Z">
+<meta property="og:updated_time" content="2016-06-12T02:13:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IOS音频编程之变声处理">
-<meta name="twitter:description" content="IOS音频编程之变声处理需求：耳塞Mic实时录音，变声处理后实时输出
-初始化程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。1）对AVAudioSession的一些设置
-NSError *error;
-self.session = [AVAudioSession sharedInstance];
-[self.session setCategory:AVAu">
+<meta name="twitter:description" content="IOS音频编程之变声处理需求：耳塞Mic实时录音，变声处理后实时输出初始化程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。1）对AVAudioSession的一些设置">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/1.png">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
@@ -87,7 +75,7 @@ self.session = [AVAudioSession sharedInstance];
 						<li>Tags</li>
 						
 						
-						<li>About</li>
+						<li>Über</li>
 						
 					</ul>
 				</div>
@@ -225,15 +213,13 @@ self.session = [AVAudioSession sharedInstance];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="IOS音频编程之变声处理"><a href="#IOS音频编程之变声处理" class="headerlink" title="IOS音频编程之变声处理"></a>IOS音频编程之变声处理</h1><h3 id="需求：耳塞Mic实时录音，变声处理后实时输出"><a href="#需求：耳塞Mic实时录音，变声处理后实时输出" class="headerlink" title="需求：耳塞Mic实时录音，变声处理后实时输出"></a>需求：耳塞Mic实时录音，变声处理后实时输出</h3><hr>
-<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><h3 id="程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。"><a href="#程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。" class="headerlink" title="程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。"></a>程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。</h3><p>1）对AVAudioSession的一些设置</p>
+        <h1 id="IOS音频编程之变声处理"><a href="#IOS音频编程之变声处理" class="headerlink" title="IOS音频编程之变声处理"></a>IOS音频编程之变声处理</h1><h3 id="需求：耳塞Mic实时录音，变声处理后实时输出"><a href="#需求：耳塞Mic实时录音，变声处理后实时输出" class="headerlink" title="需求：耳塞Mic实时录音，变声处理后实时输出"></a>需求：耳塞Mic实时录音，变声处理后实时输出</h3><h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><h3 id="程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。"><a href="#程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。" class="headerlink" title="程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。"></a>程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。</h3><p>1）对AVAudioSession的一些设置<br>    <a id="more"></a></p>
 <pre><code>NSError *error;
 self.session = [AVAudioSession sharedInstance];
 [self.session setCategory:AVAudioSessionCategoryPlayAndRecord error:&amp;error];
 handleError(error);
 //route变化监听
 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioSessionRouteChangeHandle:) name:AVAudioSessionRouteChangeNotification object:self.session];
-
 [self.session setPreferredIOBufferDuration:0.005 error:&amp;error];
 handleError(error);
 [self.session setPreferredSampleRate:kSmaple error:&amp;error];
@@ -241,8 +227,7 @@ handleError(error);
 
 [self.session setActive:YES error:&amp;error];
 handleError(error);
-</code></pre><p> <code>setPreferredIOBufferDurations</code>文档上解释<code>change to the I/O buffer duration</code>,具体解释参看官方文档。我把它理解为在每次调用输入或输出的回调，能提供多长时间(由设置的这个值决定)的音频数据。但当我用0.005和0.93分别设置它的时候，发现回调中的<code>inNumberFrames</code>的值并未改变，一直是512，相当于每次输入或输出提供了512/44100=0.0116s的数据。（<strong>设置有问题?</strong>）</p>
-<p> <code>setPreferredSampleRate</code>设置对音频数据的采样率。</p>
+</code></pre><p> <code>setPreferredIOBufferDurations</code>文档上解释<code>change to the I/O buffer duration</code>,具体解释参看官方文档。我把它理解为在每次调用输入或输出的回调，能提供多长时间(由设置的这个值决定)的音频数据。但当我用0.005和0.93分别设置它的时候，发现回调中的<code>inNumberFrames</code>的值并未改变，一直是512，相当于每次输入或输出提供了512/44100=0.0116s的数据。（<strong>设置有问题?</strong>）<br> <code>setPreferredSampleRate</code>设置对音频数据的采样率。</p>
 <p> 2)获取AudioComponentInstance</p>
 <pre><code>//Obtain a RemoteIO unit instance
 AudioComponentDescription acd;
