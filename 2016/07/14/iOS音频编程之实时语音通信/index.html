@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>iOS音频编程之实时语音通信 | All Of Me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="iOS音频编程之实时语音通信需求：手机通过Mic采集PCM编码的原始音频数据，将PCM转换为AAC编码格式，通过MultipeerConnectivity框架连接手机并发送AAC数据，在接收端使用Audio Queue播放收到的AAC音频">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS音频编程之实时语音通信">
+<meta property="og:url" content="http://yoursite.com/2016/07/14/iOS音频编程之实时语音通信/index.html">
+<meta property="og:site_name" content="All Of Me">
+<meta property="og:description" content="iOS音频编程之实时语音通信需求：手机通过Mic采集PCM编码的原始音频数据，将PCM转换为AAC编码格式，通过MultipeerConnectivity框架连接手机并发送AAC数据，在接收端使用Audio Queue播放收到的AAC音频">
+<meta property="og:updated_time" content="2016-07-14T06:24:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS音频编程之实时语音通信">
+<meta name="twitter:description" content="iOS音频编程之实时语音通信需求：手机通过Mic采集PCM编码的原始音频数据，将PCM转换为AAC编码格式，通过MultipeerConnectivity框架连接手机并发送AAC数据，在接收端使用Audio Queue播放收到的AAC音频">
+  
+    <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="https://avatars1.githubusercontent.com/u/12680300?v=3&amp;s=460" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Justin Yang</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+						
+						
+						<li>Über</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="#" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="#" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/" style="font-size: 10px;">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a> <a href="/tags/Audio-Unit-变声处理/" style="font-size: 10px;">Audio Unit,变声处理</a> <a href="/tags/Cocoa-Touch-framework/" style="font-size: 10px;">Cocoa Touch,framework</a> <a href="/tags/UIScrollView-AutoLayout/" style="font-size: 10px;">UIScrollView,AutoLayout</a> <a href="/tags/lantern-http代理/" style="font-size: 10px;">lantern,http代理</a> <a href="/tags/私有库-framework/" style="font-size: 10px;">私有库,framework</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">IOS软件工程师</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Justin Yang</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="https://avatars1.githubusercontent.com/u/12680300?v=3&amp;s=460" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Justin Yang</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="#" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="#" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-iOS音频编程之实时语音通信" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/14/iOS音频编程之实时语音通信/" class="article-date">
+  	<time datetime="2016-07-13T16:00:00.000Z" itemprop="datePublished">2016-07-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS音频编程之实时语音通信
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="iOS音频编程之实时语音通信"><a href="#iOS音频编程之实时语音通信" class="headerlink" title="iOS音频编程之实时语音通信"></a>iOS音频编程之实时语音通信</h1><h3 id="需求：手机通过Mic采集PCM编码的原始音频数据，将PCM转换为AAC编码格式，通过MultipeerConnectivity框架连接手机并发送AAC数据，在接收端使用Audio-Queue播放收到的AAC音频"><a href="#需求：手机通过Mic采集PCM编码的原始音频数据，将PCM转换为AAC编码格式，通过MultipeerConnectivity框架连接手机并发送AAC数据，在接收端使用Audio-Queue播放收到的AAC音频" class="headerlink" title="需求：手机通过Mic采集PCM编码的原始音频数据，将PCM转换为AAC编码格式，通过MultipeerConnectivity框架连接手机并发送AAC数据，在接收端使用Audio Queue播放收到的AAC音频"></a>需求：手机通过Mic采集PCM编码的原始音频数据，将PCM转换为AAC编码格式，通过MultipeerConnectivity框架连接手机并发送AAC数据，在接收端使用Audio Queue播放收到的AAC音频</h3><a id="more"></a>
+<h2 id="音频设置"><a href="#音频设置" class="headerlink" title="音频设置"></a>音频设置</h2><blockquote>
+<p>对音频以44.1KHZ的采样率来采样,以64000的比特率对PCM进行AAC转码</p>
+</blockquote>
+<p>1）对AVAudioSession的设置</p>
+<pre><code>NSError *error;
+self.session = [AVAudioSession sharedInstance];
+[self.session setCategory:AVAudioSessionCategoryPlayAndRecord error:&amp;error];
+handleError(error);
+//route变化监听
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioSessionRouteChangeHandle:) name:AVAudioSessionRouteChangeNotification object:self.session];
+
+[self.session setPreferredIOBufferDuration:0.005 error:&amp;error];
+handleError(error);
+[self.session setPreferredSampleRate:kSmaple error:&amp;error];
+handleError(error);
+
+//[self.session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&amp;error];
+//handleError(error);
+
+[self.session setActive:YES error:&amp;error];
+handleError(error);
+
+-(void)audioSessionRouteChangeHandle:(NSNotification *)noti{
+//    NSError *error;
+//    [self.session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&amp;error];
+//    handleError(error);
+[self.session setActive:YES error:nil];
+if (self.startRecord) {
+    CheckError(AudioOutputUnitStart(_toneUnit), &quot;couldnt start audio unit&quot;);
+    }
+}
+</code></pre><p>音频输入输出路径改变会触发<code>audioSessionRouteChangeHandle</code>,如果想一直让音频从手机的扬声器输出需要在每次Route改变时，把音频输出重定向到<code>AVAudioSessionPortOverrideSpeaker</code>,否则为手机听筒输出音频;其他设置说明请参照<a href="http://justinyangjing.github.io/2016/06/09/IOS%E9%9F%B3%E9%A2%91%E5%8F%98%E6%88%90%E4%B9%8B%E5%8F%98%E5%A3%B0%E5%A4%84%E7%90%86/" target="_blank" rel="external">iOS音频编程之变声处理的<strong><em>初始化</em></strong>部分</a></p>
+<p>2)对Audio Unit的设置</p>
+<pre><code>AudioComponentDescription acd;
+acd.componentType = kAudioUnitType_Output;
+acd.componentSubType = kAudioUnitSubType_RemoteIO;
+acd.componentFlags = 0;
+acd.componentFlagsMask = 0;
+acd.componentManufacturer = kAudioUnitManufacturer_Apple;
+AudioComponent inputComponent = AudioComponentFindNext(NULL, &amp;acd);
+AudioComponentInstanceNew(inputComponent, &amp;_toneUnit);
+
+
+UInt32 enable = 1;
+AudioUnitSetProperty(_toneUnit,
+                     kAudioOutputUnitProperty_EnableIO,
+                     kAudioUnitScope_Input,
+                     kInputBus,
+                     &amp;enable,
+                     sizeof(enable));
+
+
+mAudioFormat.mSampleRate         = kSmaple;//采样率
+mAudioFormat.mFormatID           = kAudioFormatLinearPCM;//PCM采样
+mAudioFormat.mFormatFlags        = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+mAudioFormat.mFramesPerPacket    = 1;//每个数据包多少帧
+mAudioFormat.mChannelsPerFrame   = 1;//1单声道，2立体声
+mAudioFormat.mBitsPerChannel     = 16;//语音每采样点占用位数
+mAudioFormat.mBytesPerFrame      = mAudioFormat.mBitsPerChannel*mAudioFormat.mChannelsPerFrame/8;//每帧的bytes数
+mAudioFormat.mBytesPerPacket     = mAudioFormat.mBytesPerFrame*mAudioFormat.mFramesPerPacket;//每个数据包的bytes总数，每帧的bytes数＊每个数据包的帧数
+mAudioFormat.mReserved           = 0;
+
+CheckError(AudioUnitSetProperty(_toneUnit,
+                                kAudioUnitProperty_StreamFormat,
+                                kAudioUnitScope_Output, kInputBus,
+                                &amp;mAudioFormat, sizeof(mAudioFormat)),
+           &quot;couldn&apos;t set the remote I/O unit&apos;s input client format&quot;);
+
+CheckError(AudioUnitSetProperty(_toneUnit,
+                                kAudioOutputUnitProperty_SetInputCallback,
+                                kAudioUnitScope_Output,
+                                kInputBus,
+                                &amp;_inputProc, sizeof(_inputProc)),
+           &quot;couldnt set remote i/o render callback for input&quot;);
+
+
+CheckError(AudioUnitInitialize(_toneUnit),
+           &quot;couldn&apos;t initialize the remote I/O unit&quot;);
+</code></pre><p>具体参数说明请参照<a href="http://justinyangjing.github.io/2016/06/09/IOS%E9%9F%B3%E9%A2%91%E5%8F%98%E6%88%90%E4%B9%8B%E5%8F%98%E5%A3%B0%E5%A4%84%E7%90%86/" target="_blank" rel="external">iOS音频编程之变声处理</a></p>
+<p>采集音频数据的输入回调</p>
+<pre><code>static OSStatus inputRenderTone(
+                     void *inRefCon,
+                     AudioUnitRenderActionFlags     *ioActionFlags,
+                     const AudioTimeStamp         *inTimeStamp,
+                     UInt32                         inBusNumber,
+                     UInt32                         inNumberFrames,
+                     AudioBufferList             *ioData)
+
+{
+
+VoiceConvertHandle *THIS=(__bridge VoiceConvertHandle*)inRefCon;
+
+AudioBufferList bufferList;
+bufferList.mNumberBuffers = 1;
+bufferList.mBuffers[0].mData = NULL;
+bufferList.mBuffers[0].mDataByteSize = 0;
+OSStatus status = AudioUnitRender(THIS-&gt;_toneUnit,
+                                  ioActionFlags,
+                                  inTimeStamp,
+                                  kInputBus,
+                                  inNumberFrames,
+                                  &amp;bufferList);
+
+NSInteger lastTimeRear = recordStruct.rear;
+for (int i = 0; i &lt; inNumberFrames; i++) {
+    SInt16 data = ((SInt16 *)bufferList.mBuffers[0].mData)[i];
+    recordStruct.recordArr[recordStruct.rear] = data;
+    recordStruct.rear = (recordStruct.rear+1)%kRecordDataLen;
+    }
+if ((lastTimeRear/1024 + 1) == (recordStruct.rear/1024)) {
+     pthread_cond_signal(&amp;recordCond);
+    }
+return status;
+}
+</code></pre><p>采用循环队列存储原始的音频数据，每1024点的PCM数据，让Converter转换为AAC编码,所以当收集了1024点PCM后，唤醒Converter线程。</p>
+<p>3)音频转码</p>
+<p>  初始化</p>
+<pre><code>AudioStreamBasicDescription sourceDes = mAudioFormat;
+AudioStreamBasicDescription targetDes;
+memset(&amp;targetDes, 0, sizeof(targetDes));
+targetDes.mFormatID = kAudioFormatMPEG4AAC;
+targetDes.mSampleRate = kSmaple;
+targetDes.mChannelsPerFrame = sourceDes.mChannelsPerFrame;
+UInt32 size = sizeof(targetDes);
+CheckError(AudioFormatGetProperty(kAudioFormatProperty_FormatInfo,
+                                  0, NULL, &amp;size, &amp;targetDes),
+           &quot;couldnt create target data format&quot;);
+
+
+//选择软件编码
+AudioClassDescription audioClassDes;
+CheckError(AudioFormatGetPropertyInfo(kAudioFormatProperty_Encoders,
+                                      sizeof(targetDes.mFormatID),
+                                      &amp;targetDes.mFormatID,
+                                      &amp;size), &quot;cant get kAudioFormatProperty_Encoders&quot;);
+UInt32 numEncoders = size/sizeof(AudioClassDescription);
+AudioClassDescription audioClassArr[numEncoders];
+CheckError(AudioFormatGetProperty(kAudioFormatProperty_Encoders,
+                                  sizeof(targetDes.mFormatID),
+                                  &amp;targetDes.mFormatID,
+                                  &amp;size,
+                                  audioClassArr),
+           &quot;wrirte audioClassArr fail&quot;);
+for (int i = 0; i &lt; numEncoders; i++) {
+    if (audioClassArr[i].mSubType == kAudioFormatMPEG4AAC
+        &amp;&amp; audioClassArr[i].mManufacturer == kAppleSoftwareAudioCodecManufacturer) {
+        memcpy(&amp;audioClassDes, &amp;audioClassArr[i], sizeof(AudioClassDescription));
+        break;
+    }
+}
+
+CheckError(AudioConverterNewSpecific(&amp;sourceDes, &amp;targetDes, 1,
+                                     &amp;audioClassDes, &amp;_encodeConvertRef),
+           &quot;cant new convertRef&quot;);
+
+size = sizeof(sourceDes);
+CheckError(AudioConverterGetProperty(_encodeConvertRef, kAudioConverterCurrentInputStreamDescription, &amp;size, &amp;sourceDes), &quot;cant get kAudioConverterCurrentInputStreamDescription&quot;);
+
+size = sizeof(targetDes);
+CheckError(AudioConverterGetProperty(_encodeConvertRef, kAudioConverterCurrentOutputStreamDescription, &amp;size, &amp;targetDes), &quot;cant get kAudioConverterCurrentOutputStreamDescription&quot;);
+
+UInt32 bitRate = 64000;
+size = sizeof(bitRate);
+CheckError(AudioConverterSetProperty(_encodeConvertRef,
+                                     kAudioConverterEncodeBitRate,
+                                     size, &amp;bitRate),
+           &quot;cant set covert property bit rate&quot;);
+[self performSelectorInBackground:@selector(convertPCMToAAC) withObject:nil];
+</code></pre><blockquote>
+<p>主要是设置编码器的输入音频格式(PCM),输出音频格式(AAC),选择软件编码器(默认使用硬件编码器),设置编码器的比特率</p>
+</blockquote>
+<p>AAC编码</p>
+<pre><code>-(void)convertPCMToAAC{
+UInt32 maxPacketSize = 0;
+UInt32 size = sizeof(maxPacketSize);
+CheckError(AudioConverterGetProperty(_encodeConvertRef,
+                                     kAudioConverterPropertyMaximumOutputPacketSize,
+                                     &amp;size,
+                                     &amp;maxPacketSize),
+           &quot;cant get max size of packet&quot;);
+
+AudioBufferList *bufferList = malloc(sizeof(AudioBufferList));
+bufferList-&gt;mNumberBuffers = 1;
+bufferList-&gt;mBuffers[0].mNumberChannels = 1;
+bufferList-&gt;mBuffers[0].mData = malloc(maxPacketSize);
+bufferList-&gt;mBuffers[0].mDataByteSize = maxPacketSize;
+
+for (; ; ) {
+    @autoreleasepool {
+
+
+    pthread_mutex_lock(&amp;recordLock);
+    while (ABS(recordStruct.rear - recordStruct.front) &lt; 1024 ) {
+        pthread_cond_wait(&amp;recordCond, &amp;recordLock);
+    }
+    pthread_mutex_unlock(&amp;recordLock);
+
+    SInt16 *readyData = (SInt16 *)calloc(1024, sizeof(SInt16));
+    memcpy(readyData, &amp;recordStruct.recordArr[recordStruct.front], 1024*sizeof(SInt16));
+    recordStruct.front = (recordStruct.front+1024)%kRecordDataLen;
+    UInt32 packetSize = 1;
+    AudioStreamPacketDescription *outputPacketDescriptions = malloc(sizeof(AudioStreamPacketDescription)*packetSize);
+    bufferList-&gt;mBuffers[0].mDataByteSize = maxPacketSize;
+    CheckError(AudioConverterFillComplexBuffer(_encodeConvertRef,
+                                               encodeConverterComplexInputDataProc,
+                                               readyData,
+                                               &amp;packetSize,
+                                               bufferList,
+                                               outputPacketDescriptions),
+               &quot;cant set AudioConverterFillComplexBuffer&quot;);
+    free(outputPacketDescriptions);
+    free(readyData);
+
+    NSMutableData *fullData = [NSMutableData dataWithBytes:bufferList-&gt;mBuffers[0].mData length:bufferList-&gt;mBuffers[0].mDataByteSize];
+
+    if ([self.delegate respondsToSelector:@selector(covertedData:)]) {
+        [self.delegate covertedData:[fullData copy]];
+    }
+    }
+}
+</code></pre><p>新建的<code>bufferList</code>是用来存放每次转码后的AAC音频数据.for循环中等待音频输入回调存满1024个PCM数组并唤醒它。<code>outputPacketDescriptions</code>数组是每次转换的AAC编码后各个包的描述,但这里每次只转换一包数据(由传入的packetSize决定)。调用<code>AudioConverterFillComplexBuffer</code>触发转码，他的第二个参数是填充原始音频数据的回调。转码完成后，会将转码的数据存放在它的第五个参数中(<code>bufferList</code>).转换完成的AAC就可以发送给另外一台手机了。</p>
+<p>填充原始数据回调</p>
+<pre><code>OSStatus encodeConverterComplexInputDataProc(AudioConverterRef inAudioConverter,
+                                         UInt32 *ioNumberDataPackets,
+                                         AudioBufferList *ioData,
+                                         AudioStreamPacketDescription **outDataPacketDescription,
+                                         void *inUserData)
+{
+    ioData-&gt;mBuffers[0].mData = inUserData;
+    ioData-&gt;mBuffers[0].mNumberChannels = 1;
+    ioData-&gt;mBuffers[0].mDataByteSize = 1024*2;
+       *ioNumberDataPackets = 1024;
+    return 0;
+}
+</code></pre><p>4）Audio Queue播放AAC音频数据</p>
+<p>Audio Queue基础知识</p>
+<p>音频数据以一个个<code>AudioQueueBuffer</code>的形式存在与音频队列中，<code>Audio Queue</code>使用它提供的音频数据来播放，某一个<code>AudioQueueBuffer</code>使用完毕后，会调用<code>Audio Queue</code>的回调，要求用户再在这个<code>AudioQueueBuffer</code>填入数据，并使它加入<code>Audio Queue</code>中，如此循环，达到不间断播放音频数据的效果。</p>
+<p>Audio Queue初始化</p>
+<pre><code>CheckError(AudioQueueNewOutput(&amp;targetDes,
+                               fillBufCallback,
+                               (__bridge void *)self,
+                               NULL,
+                               NULL,
+                               0,
+                               &amp;(_playQueue)),
+           &quot;cant new audio queue&quot;);
+CheckError( AudioQueueSetParameter(_playQueue,
+                                   kAudioQueueParam_Volume, 1.0),
+           &quot;cant set audio queue gain&quot;);
+
+for (int i = 0; i &lt; 3; i++) {
+    AudioQueueBufferRef buffer;
+    CheckError(AudioQueueAllocateBuffer(_playQueue, 1024, &amp;buffer), &quot;cant alloc buff&quot;);
+    BNRAudioQueueBuffer *buffObj = [[BNRAudioQueueBuffer alloc] init];
+    buffObj.buffer = buffer;
+    [_buffers addObject:buffObj];
+    [_reusableBuffers addObject:buffObj];
+}
+[self performSelectorInBackground:@selector(playData) withObject:nil];
+</code></pre><p>Audio Queue播放音频数据</p>
+<pre><code>-(void)playData{
+    for (; ; ) {
+    @autoreleasepool {
+
+    NSMutableData *data = [[NSMutableData alloc] init];
+    pthread_mutex_lock(&amp;playLock);
+    if (self.aacArry.count%8 != 0 || self.aacArry.count == 0) {
+        pthread_cond_wait(&amp;playCond, &amp;playLock);
+    }
+    AudioStreamPacketDescription *paks = calloc(sizeof(AudioStreamPacketDescription), 8);
+    for (int i = 0; i &lt; 8 ; i++) {//8包AAC数据组成放入一个AudioQueueBuffer的数据包
+        BNRAudioData *audio = [self.aacArry firstObject];
+        [data appendData:audio.data];
+        paks[i].mStartOffset = audio.packetDescription.mStartOffset;
+        paks[i].mDataByteSize = audio.packetDescription.mDataByteSize;
+        [self.aacArry removeObjectAtIndex:0];
+    }
+    pthread_mutex_unlock(&amp;playLock);
+
+    pthread_mutex_lock(&amp;buffLock);
+    if (_reusableBuffers.count == 0) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&amp;onceToken, ^{
+            AudioQueueStart(_playQueue, nil);
+        });
+        pthread_cond_wait(&amp;buffcond, &amp;buffLock);
+
+    }
+    BNRAudioQueueBuffer *bufferObj = [_reusableBuffers firstObject];
+    [_reusableBuffers removeObject:bufferObj];
+    pthread_mutex_unlock(&amp;buffLock);
+
+    memcpy(bufferObj.buffer-&gt;mAudioData,[data bytes] , [data length]);
+    bufferObj.buffer-&gt;mAudioDataByteSize = (UInt32)[data length];
+    CheckError(AudioQueueEnqueueBuffer(_playQueue, bufferObj.buffer, 8, paks), &quot;cant enqueue&quot;);
+    free(paks);
+
+    }
+    }
+}
+
+static void fillBufCallback(void *inUserData,
+                       AudioQueueRef inAQ,
+                       AudioQueueBufferRef buffer){
+VoiceConvertHandle *THIS=(__bridge VoiceConvertHandle*)inUserData;
+
+for (int i = 0; i &lt; THIS-&gt;_buffers.count; ++i) {
+    if (buffer == [THIS-&gt;_buffers[i] buffer]) {
+        pthread_mutex_lock(&amp;buffLock);
+        [THIS-&gt;_reusableBuffers addObject:THIS-&gt;_buffers[i]];
+        pthread_mutex_unlock(&amp;buffLock);
+        pthread_cond_signal(&amp;buffcond);
+        break;
+    }
+    }   
+}
+</code></pre><p>在<code>playData</code>中等待收到的<code>aacArry</code>数据，<strong>这里要注意:每1024点PCM转换成的一包AAC数据加入到<code>AudioQueueBuffer</code>中，不足以使Audio Queue播放音频，所以这里使用8包AAC数据放到一个<code>AudioQueueBuffer</code>中</strong>。<code>fillBufCallback</code>是Audio Queue播放完一个<code>AudioQueueBuffer</code>调用的回调函数，在这里面通知<code>playData</code>可以往使用完的<code>AudioQueueBufferRef</code>填数据了，填完后，用<code>AudioQueueEnqueueBuffer</code>将它加入<code>Audio Queue</code>中，这个三个<code>AudioQueueBufferRef</code>不断重用。</p>
+<h2 id="实时语音通信处理"><a href="#实时语音通信处理" class="headerlink" title="实时语音通信处理"></a>实时语音通信处理</h2><blockquote>
+<p>原来是想用蓝牙来传送数据的，但是自己写的蓝牙传送数据机制的速度跟不上转换的AAC数据。使用<code>MultipeerConnectivity</code>框架既可使用蓝牙也可以使用WIFI来通信，底层自动选择。当把两个手机的WIFI都关掉时，他们使用蓝牙来传送数据，在刚刚建立通话时，能听到传送的语音，之后就听不到了，使用wifi传输数据时不会出现这种情况。</p>
+</blockquote>
+<p>1) MultipeerConnectivity基础知识</p>
+<p><code>MCNearbyServiceAdvertiser</code>发送广播，并接收<code>MCNearbyServiceBrowser</code>端的邀请,<code>MCSession</code>发送接收数据、管理连接状态。建立连接和通信的流程是，<code>MCNearbyServiceAdvertiser</code>广播服务，<code>MCNearbyServiceBrowser</code>搜到这个服务后，要求把这个服务所对用的<code>MCPeerID</code>加入到它自己(<code>MCNearbyServiceBrowser</code>端)的<code>MCSession</code>中，<code>MCNearbyServiceAdvertiser</code>收到这个邀请，并同意，同时也将<code>MCNearbyServiceBrowser</code>端对应的<code>MCPeerID</code>加入到了它自己(<code>MCNearbyServiceAdvertiser</code>)的<code>MCSession</code>中.<br>之后双方可以使用各自的<code>MCSession</code>发送接收数据。</p>
+<p>2）各端发送本身转码的AAC数据，并接收对方发送的AAC数据提供给<code>Auduio queue</code>播放</p>
+<p><a href="https://github.com/JustinYangJing/BleVOIP.git" target="_blank" rel="external">源码下载地址</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/09/iOS音频变成之变声处理/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS音频编程之变声处理</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="iOS音频编程之实时语音通信" data-title="iOS音频编程之实时语音通信" data-url="http://yoursite.com/2016/07/14/iOS音频编程之实时语音通信/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 Justin Yang
+    	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
