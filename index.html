@@ -202,39 +202,7 @@
         <h2 id="AirPlay"><a href="#AirPlay" class="headerlink" title="AirPlay"></a>AirPlay</h2><blockquote>
 <p>需求:绕过系统限制，自动选择支持<code>AirPlay</code>的设备</p>
 </blockquote>
-<h3 id="Airplay基础知识"><a href="#Airplay基础知识" class="headerlink" title="Airplay基础知识"></a>Airplay基础知识</h3><p>要调用出AirPlay列表需要使用到<code>MPVolumeView</code>控件，当系统检测到网络环境中有支持<code>AirPlay</code>的设备时才会出现<code>AirPlay</code>图标,用户点击这个图标，呼出支持<code>AirPlay</code>的设备列表。</p>
-<pre><code> MPVolumeView *volumView = [[MPVolumeView alloc] initWithFrame:CGRectMake(60, 100, 40, 40)];
-[volumView setRouteButtonImage:[UIImage imageNamed:@&quot;pic-02&quot;] forState:UIControlStateNormal];
-volumView.showsVolumeSlider = NO;
-</code></pre><p> <code>setRouteButtonImage</code>自定<code>义AirPlay</code>图标</p>
-<h3 id="自动选择AirPlay设备"><a href="#自动选择AirPlay设备" class="headerlink" title="自动选择AirPlay设备"></a>自动选择AirPlay设备</h3><p>自动选择AirPlay设备要使用了<code>MediaPlayer.framework</code>的私用类<code>MPAVRoutingController</code>，在<a href="http://developer.limneos.net/?ios=8.0&amp;framework=MediaPlayer.framework&amp;header=MPAVRoutingController.h" target="_blank" rel="external">这里</a>可以搜到iOS所有的<code>framework</code>的头文件。</p>
-<pre><code>Class MPAVRoutingController = NSClassFromString(@&quot;MPAVRoutingController&quot;);
-self.routerController = [[MPAVRoutingController alloc] init];
-[self.routerController setValue:self forKey:@&quot;delegate&quot;];
-[self.routerController setValue:[NSNumber numberWithLong:2] forKey:@&quot;discoveryMode&quot;];
-</code></pre><blockquote>
-<p><code>NSClassFromString</code>获取<code>MPAVRoutingController</code>类定义，并通过KVC给它的属性赋值,<code>discoveryMode</code>为2时才能及时在<code>AirPlay</code>设备发生变化时触发它协议的<code>-(void)routingControllerAvailableRoutesDidChange:(id)arg1;</code>方法</p>
-</blockquote>
-<pre><code>-(void)routingControllerAvailableRoutesDidChange:(id)arg1{
-    if (self.deviceName == nil) {
-        return;
-    }
-    NSArray *availableRoutes = [self.routerController valueForKey:@&quot;availableRoutes&quot;];
-    for (id router in availableRoutes) {
-        NSString *routerName = [router valueForKey:@&quot;routeName&quot;];
-        if ([routerName rangeOfString:self.deviceName].length &gt;0) {
-            BOOL picked = [[router valueForKey:@&quot;picked&quot;] boolValue];
-            if (picked == NO) {
-                [self.routerController performSelector:@selector(pickRoute:) withObject:router];
-            }
-            return;
-        }
-    }
-}
-</code></pre><blockquote>
-<p>在<code>MPAVRoutingControllerDelegate</code>的<code>routingControllerAvailableRoutesDidChange</code>用代码来选择用户指定的<code>AirPlay</code>设备，如果用户想取消自动选择的功能，将deviceName属性赋值为nil即可。</p>
-</blockquote>
-
+<h3 id="Airplay基础知识"><a href="#Airplay基础知识" class="headerlink" title="Airplay基础知识"></a>Airplay基础知识</h3><p>要调用出AirPlay列表需要使用到<code>MPVolumeView</code>控件，当系统检测到网络环境中有支持<code>AirPlay</code>的设备时才会出现<code>AirPlay</code>图标,用户点击这个图标，呼出支持<code>AirPlay</code>的设备列表。<br>
       
     </div>
     
@@ -247,6 +215,10 @@ self.routerController = [[MPAVRoutingController alloc] init];
 
       
 
+      
+        <p class="article-more-link">
+          <a  href="/2016/07/16/AirPlay/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>

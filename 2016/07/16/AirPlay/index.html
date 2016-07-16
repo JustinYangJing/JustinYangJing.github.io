@@ -9,8 +9,7 @@
   <meta name="description" content="AirPlay
 需求:绕过系统限制，自动选择支持AirPlay的设备
 
-Airplay基础知识要调用出AirPlay列表需要使用到MPVolumeView控件，当系统检测到网络环境中有支持AirPlay的设备时才会出现AirPlay图标,用户点击这个图标，呼出支持AirPlay的设备列表。
- MPVolumeView *volumView = [[MPVolumeView alloc] initW">
+Airplay基础知识要调用出AirPlay列表需要使用到MPVolumeView控件，当系统检测到网络环境中有支持AirPlay的设备时才会出现AirPlay图标,用户点击这个图标，呼出支持AirPlay的设备列表。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AirPlay">
 <meta property="og:url" content="http://yoursite.com/2016/07/16/AirPlay/index.html">
@@ -18,16 +17,14 @@ Airplay基础知识要调用出AirPlay列表需要使用到MPVolumeView控件，
 <meta property="og:description" content="AirPlay
 需求:绕过系统限制，自动选择支持AirPlay的设备
 
-Airplay基础知识要调用出AirPlay列表需要使用到MPVolumeView控件，当系统检测到网络环境中有支持AirPlay的设备时才会出现AirPlay图标,用户点击这个图标，呼出支持AirPlay的设备列表。
- MPVolumeView *volumView = [[MPVolumeView alloc] initW">
-<meta property="og:updated_time" content="2016-07-16T16:26:16.000Z">
+Airplay基础知识要调用出AirPlay列表需要使用到MPVolumeView控件，当系统检测到网络环境中有支持AirPlay的设备时才会出现AirPlay图标,用户点击这个图标，呼出支持AirPlay的设备列表。">
+<meta property="og:updated_time" content="2016-07-16T16:32:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AirPlay">
 <meta name="twitter:description" content="AirPlay
 需求:绕过系统限制，自动选择支持AirPlay的设备
 
-Airplay基础知识要调用出AirPlay列表需要使用到MPVolumeView控件，当系统检测到网络环境中有支持AirPlay的设备时才会出现AirPlay图标,用户点击这个图标，呼出支持AirPlay的设备列表。
- MPVolumeView *volumView = [[MPVolumeView alloc] initW">
+Airplay基础知识要调用出AirPlay列表需要使用到MPVolumeView控件，当系统检测到网络环境中有支持AirPlay的设备时才会出现AirPlay图标,用户点击这个图标，呼出支持AirPlay的设备列表。">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
   
@@ -224,11 +221,7 @@ Airplay基础知识要调用出AirPlay列表需要使用到MPVolumeView控件，
         <h2 id="AirPlay"><a href="#AirPlay" class="headerlink" title="AirPlay"></a>AirPlay</h2><blockquote>
 <p>需求:绕过系统限制，自动选择支持<code>AirPlay</code>的设备</p>
 </blockquote>
-<h3 id="Airplay基础知识"><a href="#Airplay基础知识" class="headerlink" title="Airplay基础知识"></a>Airplay基础知识</h3><p>要调用出AirPlay列表需要使用到<code>MPVolumeView</code>控件，当系统检测到网络环境中有支持<code>AirPlay</code>的设备时才会出现<code>AirPlay</code>图标,用户点击这个图标，呼出支持<code>AirPlay</code>的设备列表。</p>
-<pre><code> MPVolumeView *volumView = [[MPVolumeView alloc] initWithFrame:CGRectMake(60, 100, 40, 40)];
-[volumView setRouteButtonImage:[UIImage imageNamed:@&quot;pic-02&quot;] forState:UIControlStateNormal];
-volumView.showsVolumeSlider = NO;
-</code></pre><p> <code>setRouteButtonImage</code>自定<code>义AirPlay</code>图标</p>
+<h3 id="Airplay基础知识"><a href="#Airplay基础知识" class="headerlink" title="Airplay基础知识"></a>Airplay基础知识</h3><p>要调用出AirPlay列表需要使用到<code>MPVolumeView</code>控件，当系统检测到网络环境中有支持<code>AirPlay</code>的设备时才会出现<code>AirPlay</code>图标,用户点击这个图标，呼出支持<code>AirPlay</code>的设备列表。<br><a id="more"></a><br>     MPVolumeView *volumView = [[MPVolumeView alloc] initWithFrame:CGRectMake(60, 100, 40, 40)];<br>    [volumView setRouteButtonImage:[UIImage imageNamed:@”pic-02”] forState:UIControlStateNormal];<br>    volumView.showsVolumeSlider = NO;<br> <code>setRouteButtonImage</code>自定<code>义AirPlay</code>图标</p>
 <h3 id="自动选择AirPlay设备"><a href="#自动选择AirPlay设备" class="headerlink" title="自动选择AirPlay设备"></a>自动选择AirPlay设备</h3><p>自动选择AirPlay设备要使用了<code>MediaPlayer.framework</code>的私用类<code>MPAVRoutingController</code>，在<a href="http://developer.limneos.net/?ios=8.0&amp;framework=MediaPlayer.framework&amp;header=MPAVRoutingController.h" target="_blank" rel="external">这里</a>可以搜到iOS所有的<code>framework</code>的头文件。</p>
 <pre><code>Class MPAVRoutingController = NSClassFromString(@&quot;MPAVRoutingController&quot;);
 self.routerController = [[MPAVRoutingController alloc] init];
