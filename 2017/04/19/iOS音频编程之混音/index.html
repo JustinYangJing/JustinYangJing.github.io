@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>iOS音频编程之混音 | All Of Me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="iOS音频编程之混音需求：多个音频源混合后输出，项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS音频编程之混音">
+<meta property="og:url" content="http://yoursite.com/2017/04/19/iOS音频编程之混音/index.html">
+<meta property="og:site_name" content="All Of Me">
+<meta property="og:description" content="iOS音频编程之混音需求：多个音频源混合后输出，项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出">
+<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/2.png">
+<meta property="og:updated_time" content="2017-04-19T12:17:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS音频编程之混音">
+<meta name="twitter:description" content="iOS音频编程之混音需求：多个音频源混合后输出，项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/1.png">
+  
+    <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="https://avatars1.githubusercontent.com/u/12680300?v=3&amp;s=460" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Justin Yang</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+						
+						
+						<li>Über</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="#" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="#" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/" style="font-size: 10px;">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a> <a href="/tags/AirPlay-AirPlay设备自动选择/" style="font-size: 10px;">AirPlay,AirPlay设备自动选择</a> <a href="/tags/Audio-Unit-AUGraph-Mixer-混音/" style="font-size: 10px;">Audio Unit,AUGraph, Mixer,混音</a> <a href="/tags/Audio-Unit-变声处理/" style="font-size: 10px;">Audio Unit,变声处理</a> <a href="/tags/Cocoa-Touch-framework/" style="font-size: 10px;">Cocoa Touch,framework</a> <a href="/tags/UIScrollView-AutoLayout/" style="font-size: 10px;">UIScrollView,AutoLayout</a> <a href="/tags/lantern-http代理/" style="font-size: 10px;">lantern,http代理</a> <a href="/tags/私有库-framework/" style="font-size: 10px;">私有库,framework</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">IOS软件工程师</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Justin Yang</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="https://avatars1.githubusercontent.com/u/12680300?v=3&amp;s=460" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Justin Yang</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="#" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="#" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-iOS音频编程之混音" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/04/19/iOS音频编程之混音/" class="article-date">
+  	<time datetime="2017-04-18T16:00:00.000Z" itemprop="datePublished">2017-04-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS音频编程之混音
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Audio-Unit-AUGraph-Mixer-混音/">Audio Unit,AUGraph, Mixer,混音</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="iOS音频编程之混音"><a href="#iOS音频编程之混音" class="headerlink" title="iOS音频编程之混音"></a>iOS音频编程之混音</h1><h3 id="需求：多个音频源混合后输出，"><a href="#需求：多个音频源混合后输出，" class="headerlink" title="需求：多个音频源混合后输出，"></a>需求：多个音频源混合后输出，</h3><h3 id="项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声-使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出"><a href="#项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声-使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出" class="headerlink" title="项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出"></a>项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用<code>MixerVoiceHandle</code>封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出</h3><a id="more"></a>
+<h2 id="AVAudioSession设置"><a href="#AVAudioSession设置" class="headerlink" title="AVAudioSession设置"></a>AVAudioSession设置</h2><p>没有把对AVAudioSession的设置封装进MixerVoiceHandle中，用户的app可能对Session会有不同的设置(如录音)，对于混音只要保证session能播放，bufferDuration和采样率为MixerVoiceHandle申请的一样即可</p>
+<pre><code>AVAudioSession *sessionInstance = [AVAudioSession sharedInstance];
+
+[sessionInstance setCategory:AVAudioSessionCategoryPlayback error:&amp;error];
+handleError(error);
+
+NSTimeInterval bufferDuration = kSessionBufDuration;
+[sessionInstance setPreferredIOBufferDuration:bufferDuration error:&amp;error];
+handleError(error);
+
+double hwSampleRate = kGraphSampleRate;
+[sessionInstance setPreferredSampleRate:hwSampleRate error:&amp;error];
+handleError(error);
+//接下来设置AVAudioSessionInterruptionNotification和AVAudioSessionRouteChangeNotification，省略
+</code></pre><p><code>kSessionBufDuration</code>为0.05s，<code>kGraphSampleRate</code>44100hz,<br>session的<code>IOBufferDuration</code>的意思就是在各<code>Audio Unit</code>的回调函数中提供0.005s时间的数据，如录音时，采集到0.005s的数据会进入一次回调函数</p>
+<h2 id="读取音频数据"><a href="#读取音频数据" class="headerlink" title="读取音频数据"></a>读取音频数据</h2><p>读取音频数据到内存中，耗时比较久，放到后台线程中执行，而初始化AUGraph时，用到了读取出的音频信息，所以干脆将读取音频数据，混音设置都放在了一个后台的串行队列中。</p>
+<pre><code>_mSoundBufferP = (SoundBufferPtr)malloc(sizeof(SoundBuffer) * self.sourceArr.count);
+
+for (int i = 0; i &lt; self.sourceArr.count; i++) {
+    NSLog(@&quot;read Audio file : %@&quot;,self.sourceArr[i]);
+    CFURLRef url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)self.sourceArr[i], kCFURLPOSIXPathStyle, false);
+    ExtAudioFileRef fp;
+    //open the audio file
+    CheckError(ExtAudioFileOpenURL(url, &amp;fp), &quot;cant open the file&quot;);
+
+    AudioStreamBasicDescription fileFormat;
+    UInt32 propSize = sizeof(fileFormat);
+
+    //read the file data format , it represents the file&apos;s actual data format.
+    CheckError(ExtAudioFileGetProperty(fp, kExtAudioFileProperty_FileDataFormat,
+                                       &amp;propSize, &amp;fileFormat),
+               &quot;read audio data format from file&quot;);
+
+    double rateRatio = kGraphSampleRate/fileFormat.mSampleRate;
+
+    UInt32 channel = 1;
+    if (fileFormat.mChannelsPerFrame == 2) {
+        channel = 2;
+    }
+    AVAudioFormat *clientFormat = [[AVAudioFormat alloc] initWithCommonFormat:AVAudioPCMFormatFloat32
+                                                                   sampleRate:kGraphSampleRate
+                                                                     channels:channel
+                                                                  interleaved:NO];
+
+    propSize = sizeof(AudioStreamBasicDescription);
+    //设置从文件中读出的音频格式
+    CheckError(ExtAudioFileSetProperty(fp, kExtAudioFileProperty_ClientDataFormat,
+                                       propSize, clientFormat.streamDescription),
+               &quot;cant set the file output format&quot;);
+    //get the file&apos;s length in sample frames
+    UInt64 numFrames = 0;
+    propSize = sizeof(numFrames);
+    CheckError(ExtAudioFileGetProperty(fp, kExtAudioFileProperty_FileLengthFrames,
+                                       &amp;propSize, &amp;numFrames),
+               &quot;cant get the fileLengthFrames&quot;);
+
+    numFrames = numFrames * rateRatio;
+
+    _mSoundBufferP[i].numFrames = (UInt32)numFrames;
+    _mSoundBufferP[i].channelCount = channel;
+    _mSoundBufferP[i].asbd      = *(clientFormat.streamDescription);
+    _mSoundBufferP[i].leftData = (Float32 *)calloc(numFrames, sizeof(Float32));
+    if (channel == 2) {
+        _mSoundBufferP[i].rightData = (Float32 *)calloc(numFrames, sizeof(Float32));
+    }
+
+    _mSoundBufferP[i].sampleNum = 0;
+    //如果是立体声，还要多为AudioBuffer申请一个空间存放右声道数据
+    AudioBufferList *bufList = (AudioBufferList *)malloc(sizeof(AudioBufferList) + sizeof(AudioBuffer)*(channel-1));
+
+    AudioBuffer emptyBuffer = {0};
+    for (int arrayIndex = 0; arrayIndex &lt; channel; arrayIndex++) {
+        bufList-&gt;mBuffers[arrayIndex] = emptyBuffer;
+    }
+    bufList-&gt;mNumberBuffers = channel;
+
+    bufList-&gt;mBuffers[0].mNumberChannels = 1;
+    bufList-&gt;mBuffers[0].mData = _mSoundBufferP[i].leftData;
+    bufList-&gt;mBuffers[0].mDataByteSize = (UInt32)numFrames*sizeof(Float32);
+
+    if (2 == channel) {
+        bufList-&gt;mBuffers[1].mNumberChannels = 1;
+        bufList-&gt;mBuffers[1].mDataByteSize = (UInt32)numFrames*sizeof(Float32);
+        bufList-&gt;mBuffers[1].mData = _mSoundBufferP[i].rightData;
+    }
+
+    UInt32 numberOfPacketsToRead = (UInt32) numFrames;
+    CheckError(ExtAudioFileRead(fp, &amp;numberOfPacketsToRead,
+                                bufList),
+               &quot;cant read the audio file&quot;);
+    free(bufList);
+    ExtAudioFileDispose(fp);
+}
+</code></pre><p>这段代码就是把音频文件以设置的<code>kExtAudioFileProperty_ClientDataFormat</code>音频格式，读出到<code>_mSoundBufferP</code>数组中</p>
+<p>如果您想使用自己准备的音频文件，ExtAudioFileRead读取时返回-50的code，一般是设置读出的目的音频格式(<code>kExtAudioFileProperty_ClientDataFormat</code>)不正确,如源文件是单声道，而想读出的目的格式是立体声</p>
+<h2 id="混音设置"><a href="#混音设置" class="headerlink" title="混音设置"></a>混音设置</h2><pre><code>CheckError(NewAUGraph(&amp;_mGraph), &quot;cant new a graph&quot;);
+
+AUNode mixerNode;
+AUNode outputNode;
+
+AudioComponentDescription mixerACD;
+mixerACD.componentType      = kAudioUnitType_Mixer;
+mixerACD.componentSubType   = kAudioUnitSubType_MultiChannelMixer;
+mixerACD.componentManufacturer = kAudioUnitManufacturer_Apple;
+mixerACD.componentFlags = 0;
+mixerACD.componentFlagsMask = 0;
+
+AudioComponentDescription outputACD;
+outputACD.componentType      = kAudioUnitType_Output;
+outputACD.componentSubType   = kAudioUnitSubType_RemoteIO;
+outputACD.componentManufacturer = kAudioUnitManufacturer_Apple;
+outputACD.componentFlags = 0;
+outputACD.componentFlagsMask = 0;
+
+CheckError(AUGraphAddNode(_mGraph, &amp;mixerACD,
+                          &amp;mixerNode),
+           &quot;cant add node&quot;);
+CheckError(AUGraphAddNode(_mGraph, &amp;outputACD,
+                          &amp;outputNode),
+           &quot;cant add node&quot;);
+
+CheckError(AUGraphConnectNodeInput(_mGraph, mixerNode, 0, outputNode, 0),
+           &quot;connect mixer Node to output node error&quot;);
+
+CheckError(AUGraphOpen(_mGraph), &quot;cant open the graph&quot;);
+
+CheckError(AUGraphNodeInfo(_mGraph, mixerNode,
+                           NULL, &amp;_mMixer),
+           &quot;generate mixer unit error&quot;);
+CheckError(AUGraphNodeInfo(_mGraph, outputNode, NULL, &amp;_mOutput),
+           &quot;generate remote I/O unit error&quot;);
+
+UInt32 numberOfMixBus = (UInt32)self.sourceArr.count;
+
+//配置混音的路数，有多少个音频文件要混音
+CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_ElementCount, kAudioUnitScope_Input, 0,
+                                &amp;numberOfMixBus, sizeof(numberOfMixBus)),
+           &quot;set mix elements error&quot;);
+
+// Increase the maximum frames per slice allows the mixer unit to accommodate the
+//    larger slice size used when the screen is locked.
+UInt32 maximumFramesPerSlice = 4096;
+CheckError( AudioUnitSetProperty (_mMixer,
+                                  kAudioUnitProperty_MaximumFramesPerSlice,
+                                  kAudioUnitScope_Global,
+                                  0,
+                                  &amp;maximumFramesPerSlice,
+                                  sizeof (maximumFramesPerSlice)
+                                  ), &quot;cant set kAudioUnitProperty_MaximumFramesPerSlice&quot;);
+
+
+for (int i = 0; i &lt; numberOfMixBus; i++) {
+    // setup render callback struct
+    AURenderCallbackStruct rcbs;
+    rcbs.inputProc = &amp;renderInput;
+    rcbs.inputProcRefCon = _mSoundBufferP;
+
+    CheckError(AUGraphSetNodeInputCallback(_mGraph, mixerNode, i, &amp;rcbs),
+               &quot;set mixerNode callback error&quot;);
+
+
+    AVAudioFormat *clientFormat = [[AVAudioFormat alloc] initWithCommonFormat:AVAudioPCMFormatFloat32
+                                                                   sampleRate:kGraphSampleRate
+                                                                     channels:_mSoundBufferP[i].channelCount
+                                                                  interleaved:NO];
+    CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_StreamFormat,
+                                    kAudioUnitScope_Input, i,
+                                    clientFormat.streamDescription, sizeof(AudioStreamBasicDescription)),
+               &quot;cant set the input scope format on bus[i]&quot;);
+
+}
+
+double sample = kGraphSampleRate;
+CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_SampleRate,
+                                kAudioUnitScope_Output, 0,&amp;sample , sizeof(sample)),
+           &quot;cant the mixer unit output sample&quot;);
+
+//未设置mixer unit 的kAudioUnitScope_Output的0的音频格式(AudioComponentDescription) 未设置io unit kAudioUnitScope_Output 的element 1的输出AudioComponentDescription
+
+//CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_StreamFormat,
+//kAudioUnitScope_Output, 0, xxxx, sizeof(AudioStreamBasicDescription)), &quot;xxx&quot;);
+
+CheckError(AUGraphInitialize(_mGraph), &quot;cant initial graph&quot;);
+</code></pre><p>新建AUGraph-&gt;新建AUNode(混音Node,音频输出Node)-&gt;将混音Node和音频输出Node连接(连接后，混音后的输出直流入音频输出的Audio Unit)-&gt;从AUNode中得到相应的Audio Unit-&gt;设置Mixer Audio Unit的混音路数-&gt;设置各路混音的回调函数，输入的音频格式-&gt;设置混音个输出采样率-&gt;Initialize AUGraph</p>
+<hr>
+<p><img style="display:block;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/1.png" alt="Audio Unit"><br>这张图片是一个Audio Unit; 相对于混音的Unit(type是<code>kAudioUnitType_Mixer</code>，subType是<code>kAudioUnitSubType_MultiChannelMixer</code>),我个人理解是这样的<br><img style="display:block" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/2.png"><br>左边是<code>Mixer Unit</code>,右边是<code>Remote I/O Unit</code>,在<code>Mixer Unit</code>的Input Scope下，有多少个Element(Bus)，由<code>kAudioUnitProperty_ElementCount</code>来设置，并分别为Mixer Unit的<code>Input Scope</code>下的各个Element(Bus)设置音频格式和输入回调；将音频源合成到<code>Mixer Unit</code>的<code>Output Scope</code>的<code>Element 0</code>上。</p>
+<h3 id="混音输入回调"><a href="#混音输入回调" class="headerlink" title="混音输入回调"></a>混音输入回调</h3><pre><code>static OSStatus renderInput(void *inRefCon,
+                        AudioUnitRenderActionFlags *ioActionFlags,
+                        const AudioTimeStamp *inTimeStamp,
+                        UInt32 inBusNumber, UInt32 inNumberFrames,
+                        AudioBufferList *ioData)
+{
+SoundBufferPtr sndbuf = (SoundBufferPtr)inRefCon;
+
+UInt32 sample = sndbuf[inBusNumber].sampleNum;      // frame number to start from
+UInt32 bufSamples = sndbuf[inBusNumber].numFrames;  // total number of frames in the sound buffer
+Float32 *leftData = sndbuf[inBusNumber].leftData; // audio data buffer
+Float32 *rightData = nullptr;
+
+Float32 *outL = (Float32 *)ioData-&gt;mBuffers[0].mData; // output audio buffer for L channel
+Float32 *outR = nullptr;
+if (sndbuf[inBusNumber].channelCount == 2) {
+    outR = (Float32 *)ioData-&gt;mBuffers[1].mData; //out audio buffer for R channel;
+    rightData = sndbuf[inBusNumber].rightData;
+}
+
+for (UInt32 i = 0; i &lt; inNumberFrames; ++i) {
+    outL[i] = leftData[sample];
+    if (sndbuf[inBusNumber].channelCount == 2) {
+        outR[i] = rightData[sample];
+    }
+    sample++;
+
+    if (sample &gt; bufSamples) {
+        // start over from the beginning of the data, our audio simply loops
+        printf(&quot;looping data for bus %d after %ld source frames rendered\n&quot;, (unsigned int)inBusNumber, (long)sample-1);
+        sample = 0;
+    }
+}
+sndbuf[inBusNumber].sampleNum = sample; // keep track of where we are in the source data buffer
+
+return noErr;
+}
+</code></pre><p>将内存中保存的各路音频数据赋值给回调函数的<code>ioData-&gt;mBuffer[x].mData</code>,<code>x=0或1</code></p>
+<h3 id="启动或停止AUGraph"><a href="#启动或停止AUGraph" class="headerlink" title="启动或停止AUGraph"></a>启动或停止<code>AUGraph</code></h3><p>初始化完成后，使用<code>AUGraphStart(_mGraph)</code>启动混音，手机就会输出混合后的音频了；使用<code>AUGraphStop(_mGraph)</code>停止输出。</p>
+<h3 id="音量和各路音频使能控制"><a href="#音量和各路音频使能控制" class="headerlink" title="音量和各路音频使能控制"></a>音量和各路音频使能控制</h3><p>可以单独控制各路音频的音量(对<code>Mixer Unit</code>的<code>Input Scope</code>下的各路<code>Element</code>的<code>kMultiChannelMixerParam_Volume</code>设置音量)，也可以控制整体的音量(对<code>Mixer Unit</code>的<code>Output Scope</code>下的<code>Element 0</code>的<code>kMultiChannelMixerParam_Volume</code>设置音量)；<br>对<code>Mixer Unit</code>的<code>Input Scope</code>下的各路<code>Element</code>的<code>kMultiChannelMixerParam_Enable</code>设置使能此路音频信号是否加入到混音中)</p>
+<p><a href="https://github.com/JustinYangJing/VoiceMixer.git" target="_blank" rel="external">代码下载地址</a><br><a href="https://developer.apple.com/library/content/documentation/MusicAudio/Conceptual/AudioUnitHostingGuide_iOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009492" target="_blank" rel="external">参考资料</a><br><a href="https://developer.apple.com/library/content/samplecode/iOSMultichannelMixerTest/Introduction/Intro.html#//apple_ref/doc/uid/TP40016060" target="_blank" rel="external">参考代码</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/07/16/AirPlay/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">AirPlay</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="iOS音频编程之混音" data-title="iOS音频编程之混音" data-url="http://yoursite.com/2017/04/19/iOS音频编程之混音/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 Justin Yang
+    	</div>
+      <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+		</script>
+    </div>
+  </div>
+  <div class="footer-right">
+  <span id="busuanzi_container_site_pv">
+    访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+</div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

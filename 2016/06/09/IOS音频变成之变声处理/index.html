@@ -25,7 +25,7 @@ self.session = [AVAudioSession sharedInstance];
 <meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/3.png">
-<meta property="og:updated_time" content="2017-04-19T06:24:44.000Z">
+<meta property="og:updated_time" content="2017-04-19T12:17:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS音频编程之变声处理">
 <meta name="twitter:description" content="iOS音频编程之变声处理需求：耳塞Mic实时录音，变声处理后实时输出初始化程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。1）对AVAudioSession的一些设置
@@ -127,7 +127,7 @@ self.session = [AVAudioSession sharedInstance];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/" style="font-size: 10px;">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a> <a href="/tags/AirPlay-AirPlay设备自动选择/" style="font-size: 10px;">AirPlay,AirPlay设备自动选择</a> <a href="/tags/Audio-Unit-变声处理/" style="font-size: 10px;">Audio Unit,变声处理</a> <a href="/tags/Cocoa-Touch-framework/" style="font-size: 10px;">Cocoa Touch,framework</a> <a href="/tags/UIScrollView-AutoLayout/" style="font-size: 10px;">UIScrollView,AutoLayout</a> <a href="/tags/lantern-http代理/" style="font-size: 10px;">lantern,http代理</a> <a href="/tags/私有库-framework/" style="font-size: 10px;">私有库,framework</a>
+						<a href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/" style="font-size: 10px;">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a> <a href="/tags/AirPlay-AirPlay设备自动选择/" style="font-size: 10px;">AirPlay,AirPlay设备自动选择</a> <a href="/tags/Audio-Unit-AUGraph-Mixer-混音/" style="font-size: 10px;">Audio Unit,AUGraph, Mixer,混音</a> <a href="/tags/Audio-Unit-变声处理/" style="font-size: 10px;">Audio Unit,变声处理</a> <a href="/tags/Cocoa-Touch-framework/" style="font-size: 10px;">Cocoa Touch,framework</a> <a href="/tags/UIScrollView-AutoLayout/" style="font-size: 10px;">UIScrollView,AutoLayout</a> <a href="/tags/lantern-http代理/" style="font-size: 10px;">lantern,http代理</a> <a href="/tags/私有库-framework/" style="font-size: 10px;">私有库,framework</a>
 					</div>
 				</section>
 				
@@ -244,7 +244,7 @@ handleError(error);
 
 [self.session setActive:YES error:&amp;error];
 handleError(error);
-</code></pre><p> <code>setPreferredIOBufferDurations</code>文档上解释<code>change to the I/O buffer duration</code>,具体解释参看官方文档。我把它理解为在每次调用输入或输出的回调，能提供多长时间(由设置的这个值决定)的音频数据。但当我用0.005和0.93分别设置它的时候，发现回调中的<code>inNumberFrames</code>的值并未改变，一直是512，相当于每次输入或输出提供了512/44100=0.0116s的数据。（<strong>设置有问题?</strong>）<br> <code>setPreferredSampleRate</code>设置对音频数据的采样率。</p>
+</code></pre><p> <code>setPreferredIOBufferDurations</code>文档上解释<code>change to the I/O buffer duration</code>,具体解释参看官方文档。我把它理解为在每次调用输入或输出的回调，能提供多长时间(由设置的这个值决定)的音频数据。<br> <code>setPreferredSampleRate</code>设置对音频数据的采样率。</p>
 <p> 2)获取AudioComponentInstance</p>
 <pre><code>//Obtain a RemoteIO unit instance
 AudioComponentDescription acd;
