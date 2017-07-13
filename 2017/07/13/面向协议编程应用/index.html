@@ -6,16 +6,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>面向协议编程应用 | All Of Me</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="面向协议编程应用###需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)">
+  <meta name="description" content="面向协议编程应用需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="面向协议编程应用">
 <meta property="og:url" content="http://yoursite.com/2017/07/13/面向协议编程应用/index.html">
 <meta property="og:site_name" content="All Of Me">
-<meta property="og:description" content="面向协议编程应用###需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)">
-<meta property="og:updated_time" content="2017-07-13T11:02:59.000Z">
+<meta property="og:description" content="面向协议编程应用需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)">
+<meta property="og:updated_time" content="2017-07-13T11:09:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面向协议编程应用">
-<meta name="twitter:description" content="面向协议编程应用###需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)">
+<meta name="twitter:description" content="面向协议编程应用需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
   
@@ -213,14 +213,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="面向协议编程应用"><a href="#面向协议编程应用" class="headerlink" title="面向协议编程应用"></a>面向协议编程应用</h1><p>###需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)</p>
-<a id="more"></a>
-<p>##抽象各个类的共性定义为协议<br>   如类<code>Object1</code>和<code>Object2</code>和<code>Object3</code>都有<code>print</code>的功能，那把print定义成协议</p>
+        <h1 id="面向协议编程应用"><a href="#面向协议编程应用" class="headerlink" title="面向协议编程应用"></a>面向协议编程应用</h1><h3 id="需求-对某些类的共性抽取，定义成协议-如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议"><a href="#需求-对某些类的共性抽取，定义成协议-如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议" class="headerlink" title="需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)"></a>需求:对某些类的共性抽取，定义成协议(如百度地图和高德地图都有定位功能，如一些第三方厂商提供的相同功能的不同品牌模块，都可以把共性抽离做成协议，封装第三方厂商提供的lib文件并实现该协议)</h3><a id="more"></a>
+<h2 id="抽象各个类的共性定义为协议"><a href="#抽象各个类的共性定义为协议" class="headerlink" title="抽象各个类的共性定义为协议"></a>抽象各个类的共性定义为协议</h2><p>   如类<code>Object1</code>和<code>Object2</code>和<code>Object3</code>都有<code>print</code>的功能，那把print定义成协议</p>
 <pre><code>@protocol CommonProtocol &lt;NSObject&gt;
 @required
 -(void)print;
 @end 
-</code></pre><p>##分别实现具有共性的这些类<br>   分别实现<code>Object1``Object2``Object3</code>并让其遵守<code>CommonProtocol</code>    实现其<code>print</code>方法</p>
+</code></pre><h2 id="分别实现具有共性的这些类"><a href="#分别实现具有共性的这些类" class="headerlink" title="分别实现具有共性的这些类"></a>分别实现具有共性的这些类</h2><p>   分别实现<code>Object1``Object2``Object3</code>并让其遵守<code>CommonProtocol</code>    实现其<code>print</code>方法</p>
 <h2 id="引入第三方库Objection-将对象和协议绑定"><a href="#引入第三方库Objection-将对象和协议绑定" class="headerlink" title="引入第三方库Objection,将对象和协议绑定"></a>引入第三方库<code>Objection</code>,将对象和协议绑定</h2><blockquote>
 <p><code>Objection</code><a href="http://www.cocoachina.com/industry/20140416/8174.html" target="_blank" rel="external">一些解释</a></p>
 </blockquote>
@@ -247,12 +246,11 @@
     }
 }
 @end
-</code></pre><p>##使用<code>Objectx(1,2,3)</code><br>在需要使用的文件中引入<code>CommonProtocol.h</code>协议</p>
+</code></pre><h2 id="使用Objectx-1-2-3"><a href="#使用Objectx-1-2-3" class="headerlink" title="使用Objectx(1,2,3)"></a>使用<code>Objectx(1,2,3)</code></h2><p>在需要使用的文件中引入<code>CommonProtocol.h</code>协议</p>
 <pre><code>id Object = [[JSObjection defaultInjector] getObject:@protocol(CommonProtocol) named:@&quot;Object3&quot;];
 id &lt;CommonProtocol&gt;instance = [[Object alloc] init];
 NSLog(@&quot;%@&quot;,[instance print]);
-</code></pre><p>##总结</p>
-<blockquote>
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
 <p>用依赖注入的方法可以只在使用的地方引入协议的头文件，结合<code>JSObjection</code>获得之前绑定在协议上的类。如果将实现做成第三方库(将协议和<code>Module</code>做成库,将几个<code>Object1、2、3</code>分别做成库)用<code>Pod</code>来引入工程，可以根据工程需要具体引入那些对象(Object1、2、3),这样可以实现按需引入第三方库，减小包的大小。</p>
 </blockquote>
 
