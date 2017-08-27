@@ -4,17 +4,21 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Tag: lantern,http代理 | All Of Me</title>
+  <title>iOS无侵入式埋点 | All Of Me</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="All Of Me">
-<meta property="og:url" content="http://yoursite.com/tags/lantern-http代理/index.html">
+  <meta name="description" content="BNRHookAction
+BNRHookAction根据您传入的字典hook您在字典中定义的方法，当您调用这些方法时，会先调用您传入的block，再调用您的方法，借用这种技术，可以实现无侵入式埋点。源码地址">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS无侵入式埋点">
+<meta property="og:url" content="http://yoursite.com/2017/08/27/无侵入式埋点/index.html">
 <meta property="og:site_name" content="All Of Me">
-<meta property="og:description">
+<meta property="og:description" content="BNRHookAction
+BNRHookAction根据您传入的字典hook您在字典中定义的方法，当您调用这些方法时，会先调用您传入的block，再调用您的方法，借用这种技术，可以实现无侵入式埋点。源码地址">
+<meta property="og:updated_time" content="2017-08-27T07:30:18.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="All Of Me">
-<meta name="twitter:description">
+<meta name="twitter:title" content="iOS无侵入式埋点">
+<meta name="twitter:description" content="BNRHookAction
+BNRHookAction根据您传入的字典hook您在字典中定义的方法，当您调用这些方法时，会先调用您传入的block，再调用您的方法，借用这种技术，可以实现无侵入式埋点。源码地址">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
   
@@ -175,53 +179,141 @@
 	</div>
 </nav>
 
-      <div class="body-wrap">
+      <div class="body-wrap"><article id="post-无侵入式埋点" class="article article-type-post" itemscope itemprop="blogPost">
   
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/02/10/lantern翻墙以及手机使用Http代理翻墙/" class="archive-article-date">
-  	<time datetime="2016-02-09T16:00:00.000Z" itemprop="datePublished">Feb 10</time>
+    <div class="article-meta">
+      <a href="/2017/08/27/无侵入式埋点/" class="article-date">
+  	<time datetime="2017-08-26T16:00:00.000Z" itemprop="datePublished">2017-08-27</time>
 </a>
-        </div>
-    	 
+    </div>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/02/10/lantern翻墙以及手机使用Http代理翻墙/">lantern翻墙以及手机使用Http代理翻墙</a>
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS无侵入式埋点
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+      </header>
+      
+      <div class="article-info article-info-post">
+        
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lantern-http代理/">lantern,http代理</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hook-埋点/">hook,埋点</a></li></ul>
 	</div>
 
-          
+        
 
-        </div>
         <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
+      </div>
+      
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="BNRHookAction"><a href="#BNRHookAction" class="headerlink" title="BNRHookAction"></a>BNRHookAction</h2><blockquote>
+<p><code>BNRHookAction</code>根据您传入的字典hook您在字典中定义的方法，当您调用这些方法时，会先调用您传入的block，再调用您的方法，借用这种技术，可以实现无侵入式埋点。<a href="https://github.com/JustinYangJing/BNRHookAction.git" target="_blank" rel="external">源码地址</a><br><a id="more"></a></p>
+</blockquote>
+<h3 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h3><pre><code>pod &apos;BNRHookAction&apos;
+</code></pre><h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><pre><code>[[BNRHookAction shareInstance]     
+            setRecordDic:recordDic
+
+          andHookBlock:^(NSString *target, NSString *action, NSDictionary *handleDic) {
+                                      NSLog(@&quot;hook %@&quot;,action);
+
+                              }];
+</code></pre><h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li><p>recordDic</p>
+<pre><code>{&quot;ClassName1&quot;:{
+       &quot;actionName1&quot;:{
+           &quot;key1&quot;:&quot;value1&quot;;
+           &quot;key2&quot;:&quot;value2&quot;};
+        &quot;actionName2&quot;:{
+        &quot;key1&quot;:&quot;value1&quot;;
+        &quot;key2&quot;:&quot;value2&quot;}
+       };
+&quot;ClassName2&quot;:{
+        &quot;actionName1&quot;:{
+        &quot;key1&quot;:&quot;value1&quot;;
+        &quot;key2&quot;:&quot;value2&quot;};
+        &quot;actionName2&quot;:{
+        &quot;key1&quot;:&quot;value1&quot;;
+        &quot;key2&quot;:&quot;value2&quot;}
+        }
+       }
+</code></pre><p>想要<code>hook</code> <code>className</code>下的<code>actionName</code>方法，<code>className</code>表示类名，<code>actionName</code>表示函数名，源码会根据这两个key值去hook。key1和value1，您可以自定义，比如做统计时,以eventId为key,在友盟或百度统计平台上自定义的事件Id为value,只要在传进来的block里面调用[MobClick event:value]就能做无侵入式埋点了，hook字典可以由后台下发。value也可以为block，调用您事先定义好的block</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/07/13/面向协议编程应用/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">面向协议编程应用</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="无侵入式埋点" data-title="iOS无侵入式埋点" data-url="http://yoursite.com/2017/08/27/无侵入式埋点/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
 
 </div>
       <footer id="footer">
@@ -251,9 +343,9 @@
 		mathjax: true,
 		animate: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false
 	}
