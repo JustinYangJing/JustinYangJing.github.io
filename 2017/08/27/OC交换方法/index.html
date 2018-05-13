@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>OC交换方法 | All Of Me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="OC交换方法需求：
+项目中要做无侵入式埋点
+项目中要拦截某些函数，而让其执行特定代码后，不再执行原函数(如在做项目页面路由时，所有由其他app(或网页)唤起本app的页面，都用window.rootViewController present一个navigationController来呈现,nav的rootVC就是要呈现的这个界面，所以需要hook这个VC的返回按钮函数，当次VC不是nav的ro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OC交换方法">
+<meta property="og:url" content="http://yoursite.com/2017/08/27/OC交换方法/index.html">
+<meta property="og:site_name" content="All Of Me">
+<meta property="og:description" content="OC交换方法需求：
+项目中要做无侵入式埋点
+项目中要拦截某些函数，而让其执行特定代码后，不再执行原函数(如在做项目页面路由时，所有由其他app(或网页)唤起本app的页面，都用window.rootViewController present一个navigationController来呈现,nav的rootVC就是要呈现的这个界面，所以需要hook这个VC的返回按钮函数，当次VC不是nav的ro">
+<meta property="og:updated_time" content="2017-09-03T11:26:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OC交换方法">
+<meta name="twitter:description" content="OC交换方法需求：
+项目中要做无侵入式埋点
+项目中要拦截某些函数，而让其执行特定代码后，不再执行原函数(如在做项目页面路由时，所有由其他app(或网页)唤起本app的页面，都用window.rootViewController present一个navigationController来呈现,nav的rootVC就是要呈现的这个界面，所以需要hook这个VC的返回按钮函数，当次VC不是nav的ro">
+  
+    <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="https://avatars1.githubusercontent.com/u/12680300?v=3&amp;s=460" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Justin Yang</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+						
+						
+						<li>Über</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/aboutMe/index.html">关于我</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="#" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="#" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/" style="font-size: 10px;">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a> <a href="/tags/AirPlay-AirPlay设备自动选择/" style="font-size: 10px;">AirPlay,AirPlay设备自动选择</a> <a href="/tags/Audio-Unit-AUGraph-Mixer-混音/" style="font-size: 10px;">Audio Unit,AUGraph, Mixer,混音</a> <a href="/tags/Audio-Unit-变声处理/" style="font-size: 10px;">Audio Unit,变声处理</a> <a href="/tags/Cocoa-Touch-framework/" style="font-size: 10px;">Cocoa Touch,framework</a> <a href="/tags/JSObjection-面向协议编程-模块分离/" style="font-size: 10px;">JSObjection, 面向协议编程, 模块分离</a> <a href="/tags/UIScrollView-AutoLayout/" style="font-size: 10px;">UIScrollView,AutoLayout</a> <a href="/tags/hook-method-swizzling-埋点/" style="font-size: 10px;">hook,method swizzling,埋点</a> <a href="/tags/私有库-framework/" style="font-size: 10px;">私有库,framework</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">iOS软件工程师</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Justin Yang</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="https://avatars1.githubusercontent.com/u/12680300?v=3&amp;s=460" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Justin Yang</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/aboutMe/index.html">关于我</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="#" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="#" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-OC交换方法" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/08/27/OC交换方法/" class="article-date">
+  	<time datetime="2017-08-26T16:00:00.000Z" itemprop="datePublished">2017-08-27</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      OC交换方法
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hook-method-swizzling-埋点/">hook,method swizzling,埋点</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="OC交换方法"><a href="#OC交换方法" class="headerlink" title="OC交换方法"></a>OC交换方法</h1><h3 id="需求："><a href="#需求：" class="headerlink" title="需求："></a>需求：</h3><ul>
+<li>项目中要做无侵入式埋点</li>
+<li>项目中要拦截某些函数，而让其执行特定代码后，不再执行原函数(如在做项目页面路由时，所有由其他app(或网页)唤起本app的页面，都用<code>window.rootViewController</code> <code>present</code>一个<code>navigationController</code>来呈现,nav的rootVC就是要呈现的这个界面，所以需要hook这个VC的返回按钮函数，当次VC不是nav的rootVC时，用pop返回,当是rootVC时用dismiss返回)</li>
+<li>让所有被hook的函数都指向同一个函数</li>
+</ul>
+<p><a href="https://github.com/JustinYangJing/BNRHookAction.git" target="_blank" rel="external">源码和使用说明地址</a><br><a id="more"></a></p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><h4 id="hook原函数，并需要调用原函数"><a href="#hook原函数，并需要调用原函数" class="headerlink" title="hook原函数，并需要调用原函数"></a>hook原函数，并需要调用原函数</h4><pre><code>-(void)setRecordDic:(NSDictionary *)recordDic
+   andHookBlock:(void (^)(NSString *target,
+                          NSString *action,
+                          NSDictionary *handleDic,
+                          NSDictionary *params))handleBlock{
+
+_recordDic = recordDic;
+self.hookBlock = handleBlock;
+dispatch_async(_serialQueue, ^{
+    NSArray *allKeys = self.recordDic.allKeys;
+    //读出字典中需要hook的类
+    for (NSString *className in allKeys) {
+        NSDictionary *actionDic = self.recordDic[className];
+        Class classInstance = NSClassFromString(className);
+        NSArray *actionKeys = actionDic.allKeys;
+        //读出该类需要hook的方法
+        for (NSString *actionName in actionKeys) {
+            Method originMethod = class_getInstanceMethod(classInstance, NSSelectorFromString(actionName));
+            //hook实例方法
+            if (originMethod) {
+                Class classImplenmentThisInstanceMethod = getClassThatImplementThisMethod(classInstance, originMethod);
+                class_addMethod(classImplenmentThisInstanceMethod,
+                                NSSelectorFromString([NSString stringWithFormat:@&quot;bnrHook_%@&quot;,actionName]),
+                                method_getImplementation(originMethod),
+                                method_getTypeEncoding(originMethod));
+                method_setImplementation(originMethod, (IMP)hookFunc);
+            }else{
+            //hook类方法
+                originMethod = class_getClassMethod(classInstance, NSSelectorFromString(actionName));
+                if (originMethod) {
+                    Class metaClass = objc_getMetaClass(class_getName(classInstance));
+                    Class metaClassImplenmentThisClassMethod = getClassThatImplementThisMethod(metaClass,originMethod);
+                    class_addMethod(metaClassImplenmentThisClassMethod,
+                                    NSSelectorFromString([NSString stringWithFormat:@&quot;bnrHook_%@&quot;,actionName]),
+                                    method_getImplementation(originMethod),
+                                    method_getTypeEncoding(originMethod));
+                    method_setImplementation(originMethod, (IMP)hookFunc);
+                }
+
+            }   
+        }    
+    }
+});
+}
+
+
+/**
+ *  在subClass的原型链上找最靠近该类的父类实现了这个实例方法,
+ */
+Class getClassThatImplementThisMethod(Class subClass,Method m){
+    Class classImplenmentThisInstanceMethod = subClass;
+    while (classImplenmentThisInstanceMethod) {
+        unsigned int count  = 0;
+        Method *methods =  class_copyMethodList(classImplenmentThisInstanceMethod, &amp;count);
+
+    //函数地址表有序排列，直接比较地址大小，不遍历
+    if (count &gt;0) {
+        //因为hook的时候，给class加了一些以bnrHook或者hnrHookOrigin开头的函数
+        //要除去这些函数，地址分布才是线性的
+        unsigned int start = 0;
+        while (start &lt; count) {
+            SEL mm = method_getName(methods[start]);
+            NSString *mmName = NSStringFromSelector(mm);
+            if ([mmName containsString:@&quot;bnrHook&quot;]||
+                [mmName containsString:@&quot;bnrHookOrigin&quot;]) {
+                start++;
+            }else{
+                break;
+            }
+        }
+        if (m &gt;= methods[start]&amp;&amp;
+            m &lt;= methods[count-1]) {
+            return classImplenmentThisInstanceMethod;
+        }
+    }
+
+    classImplenmentThisInstanceMethod = class_getSuperclass(classImplenmentThisInstanceMethod);
+}
+return classImplenmentThisInstanceMethod;
+}
+</code></pre><blockquote>
+<p>如A B C D类为依次继承关系，A C实现了<code>func</code>方法,B D未实现<code>func</code></p>
+<p> hook B的<code>func</code>方法，实际上是要是让A的<code>func</code>指向<code>hookFunc</code>,并给A加上一个<code>bnrHook_func</code>方法，让其指向A的<code>func</code>具体实现,如用代码<code>class_addMethod([B class],
+                                    NSSelectorFromString([NSString stringWithFormat:@&quot;bnrHook_%@&quot;,actionName]),
+                                    method_getImplementation(originMethod),
+                                    method_getTypeEncoding(originMethod));</code><br>                                    实际上是给B加了一个<code>bnrHook_func</code>,调用A类的<code>func</code>时，先调用了<code>hookFunc</code>的实现，确找不到A上的<code>bnrHook_func</code>的实现了;</p>
+<p>hook C的<code>func</code>函数时，需要交换的C上的<code>func</code>的实现</p>
+<p>hook D的<code>func</code>函数时，需要交换的是C上的<code>func</code>的实现</p>
+<p><code>getClassThatImplementThisMethod</code>这个函数就是处理这些情况，找出具体应该交换哪个类上的方法；</p>
+</blockquote>
+<h4 id="hook原函数，并不需要再调用原函数"><a href="#hook原函数，并不需要再调用原函数" class="headerlink" title="hook原函数，并不需要再调用原函数"></a>hook原函数，并不需要再调用原函数</h4><blockquote>
+<p>初始化方法同上，按照这里的目的，只要让原函数指向hook后的实现就可以了，并不需要给被hook的类增加函数，让其指向原来的实现；但这里有一些情况就不能满足了，比如 A B类为依次继承关系，A实现了<code>func</code>,B未实现<code>func</code>。想拦截B的<code>func</code>方法,因为B没有实现该方法，那实际上hook的时候，是把A的<code>func</code>指向了<code>hookFuncWithOutCallOriginFunc</code>的实现了，当调用A的<code>func</code>时，我们希望不拦截他，希望调用原来的实现(因为B为实现<code>func</code>,不拦截他做不了，能做的是在调用时，不调用用户传入的block,而去调用<code>func</code>原来的实现),基于这点，还是需要往A上去增加方法，让其指向原来的实现，并在hook后，调用它。</p>
+</blockquote>
+<h4 id="hook函数的具体实现"><a href="#hook函数的具体实现" class="headerlink" title="hook函数的具体实现"></a>hook函数的具体实现</h4><pre><code>/**
+ *  所有需要hook并需要调用源函数的函数都hook到了这个方法
+ */
+void* hookFunc(id self, SEL _cmd,...){
+BNRHookAction *record = [BNRHookAction shareInstance];
+NSString *className = NSStringFromClass([self class]);
+NSDictionary *actionDic = record.recordDic[className];
+NSString *actionName = NSStringFromSelector(_cmd);
+NSDictionary *actionInfo = actionDic[actionName];
+//hook表里面存放的是父类名字和父类action,那么子类调用这个action时，
+//需要把父类的action下的字典丢出去
+if (actionInfo == nil) {
+    Class fatherClass = [self class];
+    while (fatherClass) {
+        Class tmpClass = class_getSuperclass(fatherClass);
+        NSDictionary *tmpActionDic = record.recordDic[NSStringFromClass(tmpClass)];
+        actionInfo = tmpActionDic[actionName];
+        if (actionInfo == nil) {
+            fatherClass = tmpClass;
+        }else{
+            break;
+        }
+    }
+}
+
+SEL hookSelect = NSSelectorFromString([NSString stringWithFormat:@&quot;bnrHook_%@&quot;,NSStringFromSelector(_cmd)]);
+
+NSMutableDictionary *params = [NSMutableDictionary dictionary];
+params[@&quot;self&quot;] = self;
+params[@&quot;_cmd&quot;] = NSStringFromSelector(_cmd);
+if ([self respondsToSelector:hookSelect]) {
+
+    NSMethodSignature *methodSig = [self methodSignatureForSelector:hookSelect];
+    if (methodSig == nil) {
+        return nil;
+    }
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSig];
+
+    Method originMethod = class_getInstanceMethod([self class], _cmd);
+    if (originMethod == nil) {
+        originMethod = class_getClassMethod(self, _cmd);
+    }
+    unsigned int argsCount = method_getNumberOfArguments(originMethod);
+    va_list args;
+    va_start(args, _cmd);
+
+
+    for (int i = 2; i &lt; argsCount; i++) {
+        char *paramType = method_copyArgumentType(originMethod, i);
+        id param = setInvocationParam(invocation, i, args, paramType);
+        params[[NSString stringWithFormat:@&quot;%@&quot;,@(i-2)]] = param;
+
+    }
+    va_end(args);
+    if (actionInfo) {
+        !record.hookBlock?:record.hookBlock(className,actionName,actionInfo,params.copy);
+    }
+    [invocation setTarget:self];
+    [invocation setSelector:hookSelect];
+    [invocation invoke];
+
+    char *returnType = method_copyReturnType(originMethod);
+    return getInvocationReturnValue(invocation,returnType);
+
+    }
+    return nil;
+}
+</code></pre><blockquote>
+<p>函数第二个(从0开始)参数是一个不定形参，函数的返回值是void *类型，被hook的函数的参数个数,类型和返回值都是不确定的，在代码实现中需解析出不定形参的个数和具体的值，并通过<code>NSInvocation</code>来调用原来的函数实现，得到返回值。</p>
+</blockquote>
+<h4 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h4><blockquote>
+<p>不支持为父类和子类同时hook同一个函数(如A是父类，A1和A2是子类，A1实现了<code>viewWillAppear:</code>,A2未实现，同时hook A的<code>viewWillAppear:</code>和A1的<code>viewWillAppear:</code>会造成死循环; 同时hook A1和A2的<code>viewWillAppear:</code>也会造成调用的死循环，其实A2未实现<code>viewWillAppear:</code>,hook A2时，就是hook的A的<code>viewWillAppear:</code>. 如果子类不调用[super method]是不会造成调用死循环。)</p>
+<p>hook函数,并需要调用原函数时，请尽量保证hook的类有实现要hook的action,而不是父类实现了这个action.</p>
+</blockquote>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/07/13/面向协议编程应用/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">面向协议编程应用</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="OC交换方法" data-title="OC交换方法" data-url="http://yoursite.com/2017/08/27/OC交换方法/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2018 Justin Yang
+    	</div>
+      <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+		</script>
+    </div>
+  </div>
+  <div class="footer-right" style="margin-right:32px">
+  <!--
+  <span id="busuanzi_container_site_pv">
+    访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+-->
+<a href="http://www.miitbeian.gov.cn/">粤ICP备17074717号</a>
+</div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

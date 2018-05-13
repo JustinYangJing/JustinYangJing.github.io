@@ -109,7 +109,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/" style="font-size: 10px;">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a> <a href="/tags/AirPlay-AirPlay设备自动选择/" style="font-size: 10px;">AirPlay,AirPlay设备自动选择</a> <a href="/tags/Audio-Unit-AUGraph-Mixer-混音/" style="font-size: 10px;">Audio Unit,AUGraph, Mixer,混音</a> <a href="/tags/Audio-Unit-变声处理/" style="font-size: 10px;">Audio Unit,变声处理</a> <a href="/tags/Cocoa-Touch-framework/" style="font-size: 10px;">Cocoa Touch,framework</a> <a href="/tags/JSObjection-面向协议编程-模块分离/" style="font-size: 10px;">JSObjection, 面向协议编程, 模块分离</a> <a href="/tags/UIScrollView-AutoLayout/" style="font-size: 10px;">UIScrollView,AutoLayout</a> <a href="/tags/hook-埋点/" style="font-size: 10px;">hook,埋点</a> <a href="/tags/lantern-http代理/" style="font-size: 10px;">lantern,http代理</a> <a href="/tags/私有库-framework/" style="font-size: 10px;">私有库,framework</a>
+						<a href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/" style="font-size: 10px;">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a> <a href="/tags/AirPlay-AirPlay设备自动选择/" style="font-size: 10px;">AirPlay,AirPlay设备自动选择</a> <a href="/tags/Audio-Unit-AUGraph-Mixer-混音/" style="font-size: 10px;">Audio Unit,AUGraph, Mixer,混音</a> <a href="/tags/Audio-Unit-变声处理/" style="font-size: 10px;">Audio Unit,变声处理</a> <a href="/tags/Cocoa-Touch-framework/" style="font-size: 10px;">Cocoa Touch,framework</a> <a href="/tags/JSObjection-面向协议编程-模块分离/" style="font-size: 10px;">JSObjection, 面向协议编程, 模块分离</a> <a href="/tags/UIScrollView-AutoLayout/" style="font-size: 10px;">UIScrollView,AutoLayout</a> <a href="/tags/hook-method-swizzling-埋点/" style="font-size: 10px;">hook,method swizzling,埋点</a> <a href="/tags/私有库-framework/" style="font-size: 10px;">私有库,framework</a>
 					</div>
 				</section>
 				
@@ -177,10 +177,10 @@
 
       <div class="body-wrap">
   
-    <article id="post-无侵入式埋点" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-OC交换方法" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/08/27/无侵入式埋点/" class="article-date">
+      <a href="/2017/08/27/OC交换方法/" class="article-date">
   	<time datetime="2017-08-26T16:00:00.000Z" itemprop="datePublished">2017-08-27</time>
 </a>
     </div>
@@ -194,7 +194,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/27/无侵入式埋点/">iOS无侵入式埋点</a>
+      <a class="article-title" href="/2017/08/27/OC交换方法/">OC交换方法</a>
     </h1>
   
 
@@ -203,8 +203,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="BNRHookAction"><a href="#BNRHookAction" class="headerlink" title="BNRHookAction"></a>BNRHookAction</h2><blockquote>
-<p><code>BNRHookAction</code>根据您传入的字典hook您在字典中定义的方法，当您调用这些方法时，会先调用您传入的block，再调用您的方法，借用这种技术，可以实现无侵入式埋点。<a href="https://github.com/JustinYangJing/BNRHookAction.git">源码地址</a><br>
+        <h1 id="OC交换方法"><a href="#OC交换方法" class="headerlink" title="OC交换方法"></a>OC交换方法</h1><h3 id="需求："><a href="#需求：" class="headerlink" title="需求："></a>需求：</h3><ul>
+<li>项目中要做无侵入式埋点</li>
+<li>项目中要拦截某些函数，而让其执行特定代码后，不再执行原函数(如在做项目页面路由时，所有由其他app(或网页)唤起本app的页面，都用<code>window.rootViewController</code> <code>present</code>一个<code>navigationController</code>来呈现,nav的rootVC就是要呈现的这个界面，所以需要hook这个VC的返回按钮函数，当次VC不是nav的rootVC时，用pop返回,当是rootVC时用dismiss返回)</li>
+<li>让所有被hook的函数都指向同一个函数</li>
+</ul>
+<p><a href="https://github.com/JustinYangJing/BNRHookAction.git">源码和使用说明地址</a><br>
       
     </div>
     
@@ -212,14 +216,14 @@
       
       
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hook-埋点/">hook,埋点</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hook-method-swizzling-埋点/">hook,method swizzling,埋点</a></li></ul>
 	</div>
 
       
 
       
         <p class="article-more-link">
-          <a  href="/2017/08/27/无侵入式埋点/#more">more >></a>
+          <a  href="/2017/08/27/OC交换方法/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -776,66 +780,6 @@ return 0;
 
 
   
-    <article id="post-lantern翻墙以及手机使用Http代理翻墙" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/02/10/lantern翻墙以及手机使用Http代理翻墙/" class="article-date">
-  	<time datetime="2016-02-09T16:00:00.000Z" itemprop="datePublished">2016-02-10</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/10/lantern翻墙以及手机使用Http代理翻墙/">lantern翻墙以及手机使用Http代理翻墙</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="lantern翻墙以及手机使用Http代理翻墙"><a href="#lantern翻墙以及手机使用Http代理翻墙" class="headerlink" title="lantern翻墙以及手机使用Http代理翻墙"></a>lantern翻墙以及手机使用Http代理翻墙</h1><h2 id="lantern"><a href="#lantern" class="headerlink" title="lantern"></a>lantern</h2><p>lantern是github上的一个<a href="https://github.com/getlantern/lantern">开源项目</a>，支持window、Mac OS X 、Linux系统，在lantern的githup首页可下载他的安装包。Mac下安装完成，运行lantern，通过浏览器即可访问被墙的网址。<br>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lantern-http代理/">lantern,http代理</a></li></ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/02/10/lantern翻墙以及手机使用Http代理翻墙/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
     <article id="post-Xcode使用Cocoa Touch Framework新建Framework" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -969,16 +913,19 @@ return 0;
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 Justin Yang
+    		&copy; 2018 Justin Yang
     	</div>
       <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 		</script>
     </div>
   </div>
-  <div class="footer-right">
+  <div class="footer-right" style="margin-right:32px">
+  <!--
   <span id="busuanzi_container_site_pv">
     访问量<span id="busuanzi_value_site_pv"></span>次
 </span>
+-->
+<a href="http://www.miitbeian.gov.cn/">粤ICP备17074717号</a>
 </div>
 </footer>
     </div>
