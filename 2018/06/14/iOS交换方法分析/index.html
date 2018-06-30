@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>iOS传参分析 | All Of Me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="iOS传参分析
+通过此篇文章，您可以了解x86_64,arm32,arm64下各种函数调用的参数传递的方式；可以了解为什么arm64位下通过可变形参函数hook的oc方法取值会crash以及怎么解决的思考；基于参数传递原理，此demo对应的BNRHookAction类，可实现无侵入式埋点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS传参分析">
+<meta property="og:url" content="http://yoursite.com/2018/06/14/iOS交换方法分析/index.html">
+<meta property="og:site_name" content="All Of Me">
+<meta property="og:description" content="iOS传参分析
+通过此篇文章，您可以了解x86_64,arm32,arm64下各种函数调用的参数传递的方式；可以了解为什么arm64位下通过可变形参函数hook的oc方法取值会crash以及怎么解决的思考；基于参数传递原理，此demo对应的BNRHookAction类，可实现无侵入式埋点。">
+<meta property="og:updated_time" content="2018-06-30T10:12:26.822Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS传参分析">
+<meta name="twitter:description" content="iOS传参分析
+通过此篇文章，您可以了解x86_64,arm32,arm64下各种函数调用的参数传递的方式；可以了解为什么arm64位下通过可变形参函数hook的oc方法取值会crash以及怎么解决的思考；基于参数传递原理，此demo对应的BNRHookAction类，可实现无侵入式埋点。">
+  
+    <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="https://avatars1.githubusercontent.com/u/12680300?v=3&amp;s=460" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Justin Yang</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+						
+						
+						<li>Über</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/aboutMe/index.html">关于我</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="#" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="#" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/AAC-Converter-Audio-Queue-Audio-Unit-MultipeerConnectivity/" style="font-size: 10px;">AAC Converter,Audio Queue,Audio Unit,MultipeerConnectivity</a> <a href="/tags/AirPlay-AirPlay设备自动选择/" style="font-size: 10px;">AirPlay,AirPlay设备自动选择</a> <a href="/tags/Audio-Unit-AUGraph-Mixer-混音/" style="font-size: 10px;">Audio Unit,AUGraph, Mixer,混音</a> <a href="/tags/Audio-Unit-变声处理/" style="font-size: 10px;">Audio Unit,变声处理</a> <a href="/tags/Cocoa-Touch-framework/" style="font-size: 10px;">Cocoa Touch,framework</a> <a href="/tags/JSObjection-面向协议编程-模块分离/" style="font-size: 10px;">JSObjection, 面向协议编程, 模块分离</a> <a href="/tags/UIScrollView-AutoLayout/" style="font-size: 10px;">UIScrollView,AutoLayout</a> <a href="/tags/hook-method-swizzling-埋点/" style="font-size: 10px;">hook,method swizzling,埋点</a> <a href="/tags/hook-汇编-函数传参-x86-64-armv7-arm64/" style="font-size: 10px;">hook,汇编, 函数传参,x86_64,armv7,arm64</a> <a href="/tags/私有库-framework/" style="font-size: 10px;">私有库,framework</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">iOS软件工程师</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Justin Yang</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="https://avatars1.githubusercontent.com/u/12680300?v=3&amp;s=460" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Justin Yang</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/aboutMe/index.html">关于我</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="#" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="#" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-iOS交换方法分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/06/14/iOS交换方法分析/" class="article-date">
+  	<time datetime="2018-06-13T16:00:00.000Z" itemprop="datePublished">2018-06-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS传参分析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hook-汇编-函数传参-x86-64-armv7-arm64/">hook,汇编, 函数传参,x86_64,armv7,arm64</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="iOS传参分析"><a href="#iOS传参分析" class="headerlink" title="iOS传参分析"></a>iOS传参分析</h1><blockquote>
+<p>通过此篇文章，您可以了解x86_64,arm32,arm64下各种函数调用的参数传递的方式；可以了解为什么arm64位下通过可变形参函数<code>hook</code>的<code>oc</code>方法取值会<code>crash</code>以及怎么解决的思考；基于参数传递原理，此<code>demo</code>对应的<code>BNRHookAction</code>类，可实现无侵入式埋点。</p>
+</blockquote>
+<h2 id=""><a href="#" class="headerlink" title=""></a><a id="more"></a></h2><blockquote>
+<p>备注:文中汇编代码都是在<code>debug</code>模式下取得；文中的<code>可变形参方法</code>和<code>不定形参方法</code>是相同的概念；<code>x86_64</code>中的<code>mov</code>指令和<code>arm</code>上的<code>mov</code>指令赋值方向是相反的，并对部分汇编做了解释;在arm32位的机器上调试时，不按停止调试，直接command+R调试会崩溃</p>
+</blockquote>
+<h2 id="iOS函数如何传递参数"><a href="#iOS函数如何传递参数" class="headerlink" title="iOS函数如何传递参数"></a>iOS函数如何传递参数</h2><h3 id="测试源码"><a href="#测试源码" class="headerlink" title="测试源码"></a>测试源码</h3><pre><code>-(void)test{
+       [self testParamsPast:1 :2 :3 :4 :5 :6 :7 :8 :9 :10];
+    testCFunParamsPast(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    testVariadicFun((void *)0xAAAAAAAA, (void *)0x77777777,1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    Method m = class_getInstanceMethod([self class], NSSelectorFromString(@&quot;testParamsPast::::::::::&quot;));
+    method_setImplementation(m, (IMP)testVariadicFun);  
+    [self testParamsPast:1 :2 :3 :4 :5 :6 :7 :8 :9 :10];
+    method_setImplementation(m, (IMP)testVariadicFun2);
+    [self testParamsPast:1 :2 :3 :4 :5 :6 :7 :8 :9 :10];
+}
+
+-(void)testParamsPast:(long)a :(long)b :(long)c :(long)d :(long)e :(long)f :(long)g :(long)h :(long)i :(long)j{
+    long localA = 0xffffffff;
+    NSLog(@&quot;%@&quot;,@(localA));
+}
+
+void testCFunParamsPast(long a,long b,long c, long d, long e, long f,long g, long h, long i, long j){
+    long localA = 0xffffffff;
+    NSLog(@&quot;%@&quot;,@(localA));
+}
+
+void testVariadicFun(void * self, void * _cmd, ...){
+    va_list args;
+    va_start(args, _cmd);
+    long param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    va_end(args);
+}
+
+void testVariadicFun2(void * self, void * _cmd,void *parm1,void *parm2,void *parm3,void *parm4,void *parm5,void *parm6, ...){
+    va_list args;
+    va_start(args, parm6);
+    long param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    param = va_arg(args, long);
+    va_end(args);
+}
+</code></pre><h3 id="x86-64函数"><a href="#x86-64函数" class="headerlink" title="x86_64函数"></a>x86_64函数</h3><blockquote>
+<p>x86_64架构传递参数时，前6个参数分别存放在<code>rdi``rsi``rdx``rcx``r8``r9</code>中，剩下的参数放在栈中。</p>
+</blockquote>
+<hr>
+<p><code>test</code>函数汇编代码<code>明细part_1</code></p>
+<pre><code>BNRHookAction`-[BNRTestParamsPast test]:
+0x106b685a0 &lt;+0&gt;:   pushq  %rbp
+0x106b685a1 &lt;+1&gt;:   movq   %rsp, %rbp
+0x106b685a4 &lt;+4&gt;:   pushq  %r15
+0x106b685a6 &lt;+6&gt;:   pushq  %r14
+0x106b685a8 &lt;+8&gt;:   pushq  %r13
+0x106b685aa &lt;+10&gt;:  pushq  %r12
+0x106b685ac &lt;+12&gt;:  pushq  %rbx
+0x106b685ad &lt;+13&gt;:  subq   $0x108, %rsp              ; imm = 0x108 
+0x106b685b4 &lt;+20&gt;:  movl   $0x1, %eax
+0x106b685b9 &lt;+25&gt;:  movl   %eax, %edx //Mark: 0x1-&gt;eax-&gt;edx,edx是rdx中的低32bit，下面解释类似
+0x106b685bb &lt;+27&gt;:  movl   $0x2, %eax
+0x106b685c0 &lt;+32&gt;:  movl   %eax, %ecx
+0x106b685c2 &lt;+34&gt;:  movl   $0x3, %eax
+0x106b685c7 &lt;+39&gt;:  movl   %eax, %r8d
+0x106b685ca &lt;+42&gt;:  movl   $0x4, %eax
+0x106b685cf &lt;+47&gt;:  movl   %eax, %r9d
+0x106b685d2 &lt;+50&gt;:  movl   $0x5, %eax
+0x106b685d7 &lt;+55&gt;:  movl   %eax, %r10d
+0x106b685da &lt;+58&gt;:  movl   $0x6, %eax
+0x106b685df &lt;+63&gt;:  movl   %eax, %r11d
+0x106b685e2 &lt;+66&gt;:  movl   $0x7, %eax
+0x106b685e7 &lt;+71&gt;:  movl   %eax, %ebx
+0x106b685e9 &lt;+73&gt;:  movl   $0x8, %eax
+0x106b685ee &lt;+78&gt;:  movl   %eax, %r14d
+0x106b685f1 &lt;+81&gt;:  movl   $0x9, %eax
+0x106b685f6 &lt;+86&gt;:  movl   %eax, %r15d
+0x106b685f9 &lt;+89&gt;:  movl   $0xa, %eax
+0x106b685fe &lt;+94&gt;:  movl   %eax, %r12d
+0x106b68601 &lt;+97&gt;:  movq   %rdi, -0x30(%rbp)
+0x106b68605 &lt;+101&gt;: movq   %rsi, -0x38(%rbp)
+0x106b68609 &lt;+105&gt;: movq   -0x30(%rbp), %rsi
+0x106b6860d &lt;+109&gt;: movq   0x5381c(%rip), %rdi       ; &quot;testParamsPast::::::::::&quot;
+0x106b68614 &lt;+116&gt;: movq   %rdi, -0x48(%rbp)
+0x106b68618 &lt;+120&gt;: movq   %rsi, %rdi
+0x106b6861b &lt;+123&gt;: movq   -0x48(%rbp), %rsi
+0x106b6861f &lt;+127&gt;: movq   $0x5, (%rsp)     //mark：立即数5存入rsp所指向的内存地址中
+0x106b68627 &lt;+135&gt;: movq   $0x6, 0x8(%rsp)
+0x106b68630 &lt;+144&gt;: movq   $0x7, 0x10(%rsp)
+0x106b68639 &lt;+153&gt;: movq   $0x8, 0x18(%rsp)
+0x106b68642 &lt;+162&gt;: movq   $0x9, 0x20(%rsp)
+0x106b6864b &lt;+171&gt;: movq   $0xa, 0x28(%rsp)
+0x106b68654 &lt;+180&gt;: movq   %r12, -0x50(%rbp)
+0x106b68658 &lt;+184&gt;: movq   %r15, -0x58(%rbp)
+0x106b6865c &lt;+188&gt;: movq   %r14, -0x60(%rbp)
+0x106b68660 &lt;+192&gt;: movq   %rbx, -0x68(%rbp)
+0x106b68664 &lt;+196&gt;: movq   %r11, -0x70(%rbp)
+0x106b68668 &lt;+200&gt;: movq   %r10, -0x78(%rbp) 
+//mark:到这一步，已经把self,_cmd,1,2,3,4这6个参数放在了
+//`rdi``rsi``rdx``rcx``r8``r9`,并且把5，6，7，8,9,10这几个参数存入了栈中;
+//可在lldb中打印rdi和rsi,打印rsi时,需要强转成SEL类型
+//这其中还有一些操作，将5,6,7,8,9,10也存入了寄存器中，但是在进入testParamsPast::::::::::后，这些寄存器被用作其他用途了;
+-&gt;  0x106b6866c &lt;+204&gt;: callq  0x106b9d634               ; symbol stub for: objc_msgSend
+</code></pre><p> <code>testParamsPast::::::::::</code>函数汇编代码,</p>
+<pre><code> BNRHookAction`-[BNRTestParamsPast testParamsPast::::::::::]:
+0x105eb3ef0 &lt;+0&gt;:   pushq  %rbp       //mark：保存调用者函数栈的基止指针
+0x105eb3ef1 &lt;+1&gt;:   movq   %rsp, %rbp //mark:重新设置本函数栈的基止指针
+0x105eb3ef4 &lt;+4&gt;:   pushq  %r15
+0x105eb3ef6 &lt;+6&gt;:   pushq  %r14
+0x105eb3ef8 &lt;+8&gt;:   pushq  %r13
+0x105eb3efa &lt;+10&gt;:  pushq  %r12
+0x105eb3efc &lt;+12&gt;:  pushq  %rbx
+0x105eb3efd &lt;+13&gt;:  subq   $0x78, %rsp
+0x105eb3f01 &lt;+17&gt;:  movq   0x38(%rbp), %rax
+0x105eb3f05 &lt;+21&gt;:  movq   0x30(%rbp), %r10
+0x105eb3f09 &lt;+25&gt;:  movq   0x28(%rbp), %r11
+0x105eb3f0d &lt;+29&gt;:  movq   0x20(%rbp), %rbx
+0x105eb3f11 &lt;+33&gt;:  movq   0x18(%rbp), %r14
+0x105eb3f15 &lt;+37&gt;:  movq   0x10(%rbp), %r15
+0x105eb3f19 &lt;+41&gt;:  movl   $0xffffffff, %r12d        ; imm = 0xFFFFFFFF 
+0x105eb3f1f &lt;+47&gt;:  movl   %r12d, %r13d
+0x105eb3f22 &lt;+50&gt;:  movq   %rdi, -0x30(%rbp)
+0x105eb3f26 &lt;+54&gt;:  movq   %rsi, -0x38(%rbp)
+0x105eb3f2a &lt;+58&gt;:  movq   %rdx, -0x40(%rbp)
+0x105eb3f2e &lt;+62&gt;:  movq   %rcx, -0x48(%rbp)
+0x105eb3f32 &lt;+66&gt;:  movq   %r8, -0x50(%rbp)
+0x105eb3f36 &lt;+70&gt;:  movq   %r9, -0x58(%rbp)
+//mark:以上代码是把rdi rsi rdx rcx r8 r9存入栈中，也就是
+//参数列表中的前6个参数存入栈中
+...
+</code></pre><p> <code>test</code>函数汇编代码<code>明细part_2</code>,解前文中的<code>明细part_1</code>部分</p>
+<blockquote>
+<p>这里的汇编代码是调用<code>testCFunParamsPast</code>，它是一个C函数；<br>之前的代码，和调用<code>testParamsPast::::::::::</code>之前做的工作是一样的， </p>
+</blockquote>
+<pre><code>0x106b68671 &lt;+209&gt;: movl   $0x1, %eax
+0x106b68676 &lt;+214&gt;: movl   %eax, %edi
+0x106b68678 &lt;+216&gt;: movl   $0x2, %eax
+0x106b6867d &lt;+221&gt;: movl   %eax, %esi
+0x106b6867f &lt;+223&gt;: movl   $0x3, %eax
+0x106b68684 &lt;+228&gt;: movl   %eax, %edx
+0x106b68686 &lt;+230&gt;: movl   $0x4, %eax
+0x106b6868b &lt;+235&gt;: movl   %eax, %ecx
+0x106b6868d &lt;+237&gt;: movl   $0x5, %eax
+0x106b68692 &lt;+242&gt;: movl   %eax, %r8d
+0x106b68695 &lt;+245&gt;: movl   $0x6, %eax
+0x106b6869a &lt;+250&gt;: movl   %eax, %r9d
+0x106b6869d &lt;+253&gt;: movl   $0x7, %eax
+0x106b686a2 &lt;+258&gt;: movl   %eax, %r10d
+0x106b686a5 &lt;+261&gt;: movl   $0x8, %eax
+0x106b686aa &lt;+266&gt;: movl   %eax, %r11d
+0x106b686ad &lt;+269&gt;: movl   $0x9, %eax
+0x106b686b2 &lt;+274&gt;: movl   %eax, %ebx
+0x106b686b4 &lt;+276&gt;: movl   $0xa, %eax
+0x106b686b9 &lt;+281&gt;: movl   %eax, %r14d
+0x106b686bc &lt;+284&gt;: movq   $0x7, (%rsp)
+0x106b686c4 &lt;+292&gt;: movq   $0x8, 0x8(%rsp)
+0x106b686cd &lt;+301&gt;: movq   $0x9, 0x10(%rsp)
+0x106b686d6 &lt;+310&gt;: movq   $0xa, 0x18(%rsp)
+0x106b686df &lt;+319&gt;: movq   %r14, -0x80(%rbp)
+0x106b686e3 &lt;+323&gt;: movq   %rbx, -0x88(%rbp)
+0x106b686ea &lt;+330&gt;: movq   %r11, -0x90(%rbp)
+0x106b686f1 &lt;+337&gt;: movq   %r10, -0x98(%rbp)
+0x106b686f8 &lt;+344&gt;: callq  0x106b688e0               ; testCFunParamsPast at BNRTestParamsPast.m:26
+</code></pre><p> <code>testCFunParamsPast</code>函数的汇编和<code>testParamsPast::::::::::</code>类似，汇编就不贴上来了</p>
+<p><code>test</code>函数汇编代码<code>明细part_3</code>,接前文中的<code>明细part_2</code>部分<br>，这里的汇编代码是调用<code>testVariadicFun</code>，</p>
+<pre><code>0x106b686fd &lt;+349&gt;: movl   $0xaaaaaaaa, %eax         ; imm = 0xAAAAAAAA 
+0x106b68702 &lt;+354&gt;: movl   %eax, %edi
+0x106b68704 &lt;+356&gt;: movl   $0x77777777, %eax         ; imm = 0x77777777 
+0x106b68709 &lt;+361&gt;: movl   %eax, %esi
+0x106b6870b &lt;+363&gt;: movl   $0x1, %edx
+0x106b68710 &lt;+368&gt;: movl   $0x2, %ecx
+0x106b68715 &lt;+373&gt;: movl   $0x3, %r8d
+0x106b6871b &lt;+379&gt;: movl   $0x4, %r9d
+0x106b68721 &lt;+385&gt;: movl   $0x5, %eax
+0x106b68726 &lt;+390&gt;: movl   $0x6, %r13d
+0x106b6872c &lt;+396&gt;: movl   $0x7, %r10d
+0x106b68732 &lt;+402&gt;: movl   $0x8, %r11d
+0x106b68738 &lt;+408&gt;: movl   $0x9, %r14d
+0x106b6873e &lt;+414&gt;: movl   $0xa, %r15d
+0x106b68744 &lt;+420&gt;: movl   $0x5, (%rsp)
+0x106b6874b &lt;+427&gt;: movl   $0x6, 0x8(%rsp) //mark:此时rsp的值`0x7ffeebd2e350`,这里是将大于6的参数存到栈中
+0x106b68753 &lt;+435&gt;: movl   $0x7, 0x10(%rsp)
+0x106b6875b &lt;+443&gt;: movl   $0x8, 0x18(%rsp)
+0x106b68763 &lt;+451&gt;: movl   $0x9, 0x20(%rsp)
+0x106b6876b &lt;+459&gt;: movl   $0xa, 0x28(%rsp)
+0x106b68773 &lt;+467&gt;: movl   %eax, -0x9c(%rbp)
+0x106b68779 &lt;+473&gt;: movb   $0x0, %al
+0x106b6877b &lt;+475&gt;: movl   %r15d, -0xa0(%rbp)
+0x106b68782 &lt;+482&gt;: movl   %r14d, -0xa4(%rbp)
+0x106b68789 &lt;+489&gt;: movl   %r11d, -0xa8(%rbp)
+0x106b68790 &lt;+496&gt;: movl   %r10d, -0xac(%rbp)
+0x106b68797 &lt;+503&gt;: movl   %r13d, -0xb0(%rbp)
+0x106b6879e &lt;+510&gt;: callq  0x106b68990               ; testVariadicFun at BNRTestParamsPast.m:31
+</code></pre><p>在<code>x86_64</code>位系统上，<code>va_list</code>的定义如下</p>
+<pre><code>struct __va_list_tag {
+    unsigned int gp_offset;
+    unsigned int fp_offset;
+    void *overflow_arg_area;
+    void *reg_save_area;
+} [1]
+</code></pre><p>在<code>void testVariadicFun(void * self, void * _cmd, ...)</code>中的<code>va_start(args, _cmd)</code>下一句话打断点，可以看到<code>va_list</code>变量的值；直接查看<code>reg_save_area</code>内存所在的地址，在偏移16(由<code>gp_offset</code>所指示)个字节的地址处存放了形参的第3个参数到第6个参数。它的取值规则是，当<code>gp_offset</code>小于48时，参数的值是<code>*(reg_save_area + gp_offset)</code>;否则参数值等于<code>*overflow_arg_area</code>;再移动指针<code>overflow_arg_area += sizeof(long)</code></p>
+<p><code>test</code>函数代码<code>part_4</code>将<code>testParamsPast::::::::::</code>的实现指向<code>testVariadicFun</code>；然后调用<code>testParamsPast::::::::::</code>,即执行<code>testVariadicFun</code>的实现，各参数取值与直接调用<code>testVariadicFun</code>一样。</p>
+<blockquote>
+<p>通过以上分析，在<code>x86_64</code>上，前6个参数是通过寄存器来传值的；不管是固定参数个数的函数还是不定形参的函数，在函数里面都会把那个6个寄存器的值拷贝到栈里面(<code>Debug模式下</code>)</p>
+</blockquote>
+<h3 id="armV7-arm32-上参数传递"><a href="#armV7-arm32-上参数传递" class="headerlink" title="armV7(arm32)上参数传递"></a>armV7(arm32)上参数传递</h3><p>直接分析调用<code>testVariadicFun</code>调用前的部分</p>
+<pre><code>  0x6def8 &lt;+162&gt;: mvn    r0, #0x55555555
+0x6defc &lt;+166&gt;: movw   r1, #0x7777
+0x6df00 &lt;+170&gt;: movt   r1, #0x7777
+0x6df04 &lt;+174&gt;: movs   r2, #0x1
+0x6df06 &lt;+176&gt;: movs   r3, #0x2
+0x6df08 &lt;+178&gt;: movw   r9, #0x3
+0x6df0c &lt;+182&gt;: movw   r12, #0x4
+0x6df10 &lt;+186&gt;: movw   lr, #0x5
+0x6df14 &lt;+190&gt;: movs   r4, #0x6
+0x6df16 &lt;+192&gt;: movs   r5, #0x7
+0x6df18 &lt;+194&gt;: movs   r6, #0x8
+0x6df1a &lt;+196&gt;: movw   r8, #0x9
+0x6df1e &lt;+200&gt;: movw   r10, #0xa
+0x6df22 &lt;+204&gt;: str.w  r9, [sp]
+0x6df26 &lt;+208&gt;: str.w  r12, [sp, #0x4]
+0x6df2a &lt;+212&gt;: str.w  lr, [sp, #0x8]
+0x6df2e &lt;+216&gt;: str    r4, [sp, #0xc]
+0x6df30 &lt;+218&gt;: str    r5, [sp, #0x10]
+0x6df32 &lt;+220&gt;: str    r6, [sp, #0x14]
+0x6df34 &lt;+222&gt;: str.w  r8, [sp, #0x18]
+0x6df38 &lt;+226&gt;: str.w  r10, [sp, #0x1c]
+-&gt;  0x6df3c &lt;+230&gt;: bl     0x6e098                   ; testVariadicFun at BNRTestParamsPast.m:31
+</code></pre><p>将前四个参数粗放在r0-r3中，后面的8个参数存放在栈中;在<code>testVariadicFun</code>函数中，又分别将r0-r3入栈和在调用函数之前入栈的参数组成连续的地址(按照资料说，参数入栈顺序从右至左,第一个参数最后入栈,当可不定形参函数第一二个参数有名字时，可以看到内存地址中<code>_cmd</code>的值反而比self后入栈);在<code>arm</code>架构上，<code>va_list</code>的定义就是一个指针，<code>va_arg(args, long)</code>取值和移动<code>args</code>的指向。</p>
+<h3 id="arm64参数传递"><a href="#arm64参数传递" class="headerlink" title="arm64参数传递"></a>arm64参数传递</h3><blockquote>
+<p>wn寄存器是xn寄存器的低32bit,在arm64下他的前8个参数分别是由x0~x7来传递的，大于8个参数压栈传递</p>
+</blockquote>
+<p>直接调用<code>testVariadicFun</code>前，执行的汇编</p>
+<pre><code> 0x10006edc4 &lt;+148&gt;: mov    x8, sp
+0x10006edc8 &lt;+152&gt;: mov    w13, #0xa
+0x10006edcc &lt;+156&gt;: mov    x9, x13
+0x10006edd0 &lt;+160&gt;: str    x9, [x8, #0x48] //mark:152~160,*(x8+0x48) = x9 = w13 = 0x0a,表示参数表中最后一个参数入栈，以下类似
+0x10006edd4 &lt;+164&gt;: mov    w13, #0x9
+0x10006edd8 &lt;+168&gt;: mov    x9, x13
+0x10006eddc &lt;+172&gt;: str    x9, [x8, #0x40]
+0x10006ede0 &lt;+176&gt;: orr    w13, wzr, #0x8
+0x10006ede4 &lt;+180&gt;: mov    x9, x13
+0x10006ede8 &lt;+184&gt;: str    x9, [x8, #0x38]
+0x10006edec &lt;+188&gt;: orr    w13, wzr, #0x7
+0x10006edf0 &lt;+192&gt;: mov    x9, x13
+0x10006edf4 &lt;+196&gt;: str    x9, [x8, #0x30]
+0x10006edf8 &lt;+200&gt;: orr    w13, wzr, #0x6
+0x10006edfc &lt;+204&gt;: mov    x9, x13
+0x10006ee00 &lt;+208&gt;: str    x9, [x8, #0x28]
+0x10006ee04 &lt;+212&gt;: mov    w13, #0x5
+0x10006ee08 &lt;+216&gt;: mov    x9, x13
+0x10006ee0c &lt;+220&gt;: str    x9, [x8, #0x20]
+0x10006ee10 &lt;+224&gt;: orr    w13, wzr, #0x4
+0x10006ee14 &lt;+228&gt;: mov    x9, x13
+0x10006ee18 &lt;+232&gt;: str    x9, [x8, #0x18]
+0x10006ee1c &lt;+236&gt;: orr    w13, wzr, #0x3
+0x10006ee20 &lt;+240&gt;: mov    x9, x13
+0x10006ee24 &lt;+244&gt;: str    x9, [x8, #0x10]
+0x10006ee28 &lt;+248&gt;: orr    w13, wzr, #0x2
+0x10006ee2c &lt;+252&gt;: mov    x9, x13
+0x10006ee30 &lt;+256&gt;: str    x9, [x8, #0x8]
+0x10006ee34 &lt;+260&gt;: orr    w13, wzr, #0x1
+0x10006ee38 &lt;+264&gt;: mov    x9, x13
+0x10006ee3c &lt;+268&gt;: str    x9, [x8]
+0x10006ee40 &lt;+272&gt;: mov    w13, #-0x55555556
+0x10006ee44 &lt;+276&gt;: mov    x0, x13
+0x10006ee48 &lt;+280&gt;: mov    w13, #0x77777777
+0x10006ee4c &lt;+284&gt;: mov    x1, x13
+0x10006ee50 &lt;+288&gt;: bl     0x10006efb4               ; testVariadicFun at BNRTestParamsPast.m:31
+</code></pre><p>可以看到从10~1都是依次入栈，并没有通过寄存器来传递参数，而第一个参数和第二个参数则是通过<code>x0</code>和<code>x1</code>来传递参数    </p>
+<p><code>testVariadicFun</code>的部分汇编代码</p>
+<pre><code>0x1000e6fb4 &lt;+0&gt;:   sub    sp, sp, #0x70             ; =0x70 
+0x1000e6fb8 &lt;+4&gt;:   str    x0, [sp, #0x68] //mark:这里将x0入栈，这个地址刚好挨着第三个参数(参数值为1)入栈的地址 
+0x1000e6fbc &lt;+8&gt;:   str    x1, [sp, #0x60]
+0x1000e6fc0 &lt;+12&gt;:  add    x0, sp, #0x70             ; =0x70 
+0x1000e6fc4 &lt;+16&gt;:  str    x0, [sp, #0x58]
+</code></pre><blockquote>
+<p>总结:直接调用不定形参函数,函数的参数的地址也是连续分布的，且没名字的参数是直接通过入栈来传递的，可以通过<code>va_list</code>移动指针来获得各个参数的值</p>
+</blockquote>
+<p><code>test</code>函数代码将<code>testParamsPast::::::::::</code>的实现指向<code>testVariadicFun</code>；然后调用<code>testParamsPast::::::::::</code>,即执行<code>testVariadicFun</code>的实现;再执行<code>testParamsPast::::::::::</code>前的汇编代码</p>
+<pre><code> 0x1000e6eac &lt;+380&gt;: orr    x2, xzr, #0x1
+0x1000e6eb0 &lt;+384&gt;: orr    x3, xzr, #0x2
+0x1000e6eb4 &lt;+388&gt;: orr    x4, xzr, #0x3
+0x1000e6eb8 &lt;+392&gt;: orr    x5, xzr, #0x4
+0x1000e6ebc &lt;+396&gt;: mov    x6, #0x5
+0x1000e6ec0 &lt;+400&gt;: orr    x7, xzr, #0x6
+0x1000e6ec4 &lt;+404&gt;: orr    x8, xzr, #0x7
+0x1000e6ec8 &lt;+408&gt;: orr    x9, xzr, #0x8
+0x1000e6ecc &lt;+412&gt;: mov    x10, #0x9
+0x1000e6ed0 &lt;+416&gt;: mov    x11, #0xa
+0x1000e6ed4 &lt;+420&gt;: adrp   x12, 83
+0x1000e6ed8 &lt;+424&gt;: add    x12, x12, #0xed0          ; =0xed0 
+0x1000e6edc &lt;+428&gt;: ldur   x1, [x29, #-0x8]
+0x1000e6ee0 &lt;+432&gt;: ldr    x12, [x12]
+0x1000e6ee4 &lt;+436&gt;: stur   x0, [x29, #-0x30]
+0x1000e6ee8 &lt;+440&gt;: mov    x0, x1  //mark:x0存self的值
+0x1000e6eec &lt;+444&gt;: mov    x1, x12  //mark:x1存_cmd的值 
+0x1000e6ef0 &lt;+448&gt;: str    x8, [sp] //mark:最后的4个参数入栈
+0x1000e6ef4 &lt;+452&gt;: str    x9, [sp, #0x8]
+0x1000e6ef8 &lt;+456&gt;: str    x10, [sp, #0x10]
+0x1000e6efc &lt;+460&gt;: str    x11, [sp, #0x18]
+-&gt;  0x1000e6f00 &lt;+464&gt;: bl     0x10011b420               ; symbol stub for: objc_msgSend
+</code></pre><p>可以看到，x0~x7分别存了前8个参数的值(包括<code>objc_msgSend</code>默认的<code>self</code>和<code>_cmd</code>参数)，后面4个参数存通过入栈传递</p>
+<p>再来看<code>testVariadicFun</code>的汇编代码，和直接调用他的汇编代码一样的;通过<code>va_start(args, _cmd)</code>获取第一个可变形参(第三个参数)的地址，<strong>地址获取了，但是x2~x7的值并没有入栈，所以在<code>arm64</code>上用可变形参函数<code>hook``OC</code>函数的实现，再用va_list来取得参数的值会出错</strong></p>
+<h3 id="如何解决arm64用可变形参函数hook-OC函数的实现，取参数值不正确的问题"><a href="#如何解决arm64用可变形参函数hook-OC函数的实现，取参数值不正确的问题" class="headerlink" title="如何解决arm64用可变形参函数hook``OC函数的实现，取参数值不正确的问题"></a>如何解决<code>arm64</code>用可变形参函数<code>hook``OC</code>函数的实现，取参数值不正确的问题</h3><h4 id="为可变形参函数增加至8个参数来解决arm64用可变形参函数hook-OC函数的实现"><a href="#为可变形参函数增加至8个参数来解决arm64用可变形参函数hook-OC函数的实现" class="headerlink" title="为可变形参函数增加至8个参数来解决arm64用可变形参函数hook``OC函数的实现"></a>为可变形参函数增加至8个参数来解决<code>arm64</code>用可变形参函数<code>hook``OC</code>函数的实现</h4><p>通过汇编代码分析，只要传递的参数是有名字的，那么在函数实现的开始部分，就会把对应的传递参数的寄存器的值入栈(参数1~参数8分别由高至低存放，和只用栈来传递参数方式地址相反)，这个入栈的地址对应的就是参数中变量的地址，入栈后，便可通过<code>va_start(args, _cmd)</code>获取第一个可变形参(第9个参数)参数的地址了，并能通过地址正确取到参数的值了；可用如下可变函数<code>hook</code>的<code>arm64</code>的方法</p>
+<pre><code>void testVariadicFun2(void * self, void * _cmd,void *parm1,void *parm2,void *parm3,void *parm4,void *parm5,void *parm6, ...) 
+</code></pre><h3 id="直接取通过寄存器传值的参数"><a href="#直接取通过寄存器传值的参数" class="headerlink" title="直接取通过寄存器传值的参数"></a>直接取通过寄存器传值的参数</h3><p>事实上，第一种方法由于<code>param1</code>~<code>param6</code>的类型是<code>void *</code>,它只会取得<code>x2</code>~<code>x7</code>寄存器的值，而当参数中有<code>float</code>或<code>double</code>类型时，<code>param1</code>~<code>parma6</code>就拿不到正确的值了;而且当使用<code>va_list</code>来从栈中取值时，由于是<code>hook</code>的<code>OC</code>函数，在调用函数时，编译器并不认为你调用的是可变形参函数，所以不会进行8字节对齐，只能取得参数类型占用8个字节(long,指针(OC对对象)，double)的参数的值;<br>使用<code>OC</code>和汇编混编的方式来取得寄存器的值，需要在进入函数时，就立刻开始取值，否则传递参数的寄存器的值会因为函数中的代码而改变，取值代码如下：</p>
+<pre><code>float f0,f1,f2,f3,f4,f5,f6,f7;
+double d0,d1,d2,d3,d4,d5,d6,d7;
+long x0,x1,x2,x3,x4,x5,x6,x7;
+asm(
+    &quot;fmov   %w0,s0\n&quot;
+    &quot;fmov   %8,d0\n&quot;
+    &quot;fmov   %w1,s1\n&quot;
+    &quot;fmov   %9,d1\n&quot;
+    &quot;fmov   %w2,s2\n&quot;
+    &quot;fmov   %10,d2\n&quot;
+    &quot;fmov   %w3,s3\n&quot;
+    &quot;fmov   %11,d3\n&quot;
+    &quot;fmov   %w4,s4\n&quot;
+    &quot;fmov   %12,d4\n&quot;
+    &quot;fmov   %w5,s5\n&quot;
+    &quot;fmov   %13,d5\n&quot;
+    &quot;fmov   %w6,s6\n&quot;
+    &quot;fmov   %14,d6\n&quot;
+    &quot;fmov   %w7,s7\n&quot;
+    &quot;fmov   %15,d7\n&quot;
+    :&quot;=r&quot;(f0),&quot;=r&quot;(f1),&quot;=r&quot;(f2),&quot;=r&quot;(f3),&quot;=r&quot;(f4),&quot;=r&quot;(f5),&quot;=r&quot;(f6),&quot;=r&quot;(f7),&quot;=r&quot;(d0),&quot;=r&quot;(d1),&quot;=r&quot;(d2),&quot;=r&quot;(d3),&quot;=r&quot;(d4),&quot;=r&quot;(d5),&quot;=r&quot;(d6),&quot;=r&quot;(d7)
+    :
+    :&quot;x2&quot;,&quot;x3&quot;,&quot;x4&quot;,&quot;x5&quot;,&quot;x6&quot;,&quot;x7&quot;
+    );
+asm(
+    &quot;mov   %0,x2\n&quot;
+    &quot;mov   %1,x3\n&quot;
+    &quot;mov   %2,x4\n&quot;
+    &quot;mov   %3,x5\n&quot;
+    &quot;mov   %4,x6\n&quot;
+    &quot;mov   %5,x7\n&quot;
+    :&quot;=r&quot;(x2),&quot;=r&quot;(x3),&quot;=r&quot;(x4),&quot;=r&quot;(x5),&quot;=r&quot;(x6),&quot;=r&quot;(x7)
+    :
+    :
+    );   
+</code></pre><h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>  <a href="https://github.com/JustinYangJing/BNRHookAction" target="_blank" rel="external">源码链接</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/08/27/OC交换方法/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">OC交换方法</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="iOS交换方法分析" data-title="iOS传参分析" data-url="http://yoursite.com/2018/06/14/iOS交换方法分析/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2018 Justin Yang
+    	</div>
+      <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+		</script>
+    </div>
+  </div>
+  <div class="footer-right" style="margin-right:32px">
+  <!--
+  <span id="busuanzi_container_site_pv">
+    访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+-->
+<a href="http://www.miitbeian.gov.cn/">粤ICP备17074717号</a>
+</div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
