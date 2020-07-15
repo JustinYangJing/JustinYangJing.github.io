@@ -12,13 +12,13 @@
 <meta property="og:url" content="http://yoursite.com/2017/04/19/iOS音频编程之混音/index.html">
 <meta property="og:site_name" content="All Of Me">
 <meta property="og:description" content="iOS音频编程之混音需求：多个音频源混合后输出，项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/1.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/2.png">
-<meta property="og:updated_time" content="2017-04-19T12:17:24.000Z">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/MixerVoice/1.png">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/MixerVoice/2.png">
+<meta property="og:updated_time" content="2020-07-15T11:13:42.564Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS音频编程之混音">
 <meta name="twitter:description" content="iOS音频编程之混音需求：多个音频源混合后输出，项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/1.png">
+<meta name="twitter:image" content="https://lifestyle1.cn/Resource/Image/MixerVoice/1.png">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
   
@@ -366,28 +366,11 @@ CheckError( AudioUnitSetProperty (_mMixer,
                                   &amp;maximumFramesPerSlice,
                                   sizeof (maximumFramesPerSlice)
                                   ), &quot;cant set kAudioUnitProperty_MaximumFramesPerSlice&quot;);
-
-
-for (int i = 0; i &lt; numberOfMixBus; i++) {
-    // setup render callback struct
-    AURenderCallbackStruct rcbs;
-    rcbs.inputProc = &amp;renderInput;
-    rcbs.inputProcRefCon = _mSoundBufferP;
-
-    CheckError(AUGraphSetNodeInputCallback(_mGraph, mixerNode, i, &amp;rcbs),
-               &quot;set mixerNode callback error&quot;);
-
-
-    AVAudioFormat *clientFormat = [[AVAudioFormat alloc] initWithCommonFormat:AVAudioPCMFormatFloat32
-                                                                   sampleRate:kGraphSampleRate
-                                                                     channels:_mSoundBufferP[i].channelCount
-                                                                  interleaved:NO];
-    CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_StreamFormat,
-                                    kAudioUnitScope_Input, i,
-                                    clientFormat.streamDescription, sizeof(AudioStreamBasicDescription)),
-               &quot;cant set the input scope format on bus[i]&quot;);
-
-}
+</code></pre><p>​<br>    for (int i = 0; i &lt; numberOfMixBus; i++) {<br>        // setup render callback struct<br>        AURenderCallbackStruct rcbs;<br>        rcbs.inputProc = &renderInput;<br>        rcbs.inputProcRefCon = _mSoundBufferP;</p>
+<pre><code>CheckError(AUGraphSetNodeInputCallback(_mGraph, mixerNode, i, &amp;rcbs),
+           &quot;set mixerNode callback error&quot;);
+</code></pre><p>​<br>        AVAudioFormat *clientFormat = [[AVAudioFormat alloc] initWithCommonFormat:AVAudioPCMFormatFloat32<br>                                                                       sampleRate:kGraphSampleRate<br>                                                                         channels:_mSoundBufferP[i].channelCount<br>                                                                      interleaved:NO];<br>        CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_StreamFormat,<br>                                        kAudioUnitScope_Input, i,<br>                                        clientFormat.streamDescription, sizeof(AudioStreamBasicDescription)),<br>                   “cant set the input scope format on bus[i]”);</p>
+<pre><code>}
 
 double sample = kGraphSampleRate;
 CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_SampleRate,
@@ -402,7 +385,7 @@ CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_SampleRate,
 CheckError(AUGraphInitialize(_mGraph), &quot;cant initial graph&quot;);
 </code></pre><p>新建AUGraph-&gt;新建AUNode(混音Node,音频输出Node)-&gt;将混音Node和音频输出Node连接(连接后，混音后的输出直流入音频输出的Audio Unit)-&gt;从AUNode中得到相应的Audio Unit-&gt;设置Mixer Audio Unit的混音路数-&gt;设置各路混音的回调函数，输入的音频格式-&gt;设置混音个输出采样率-&gt;Initialize AUGraph</p>
 <hr>
-<p><img style="display:block;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/1.png" alt="Audio Unit"><br>这张图片是一个Audio Unit; 相对于混音的Unit(type是<code>kAudioUnitType_Mixer</code>，subType是<code>kAudioUnitSubType_MultiChannelMixer</code>),我个人理解是这样的<br><img style="display:block" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/MixerVoice/2.png"><br>左边是<code>Mixer Unit</code>,右边是<code>Remote I/O Unit</code>,在<code>Mixer Unit</code>的Input Scope下，有多少个Element(Bus)，由<code>kAudioUnitProperty_ElementCount</code>来设置，并分别为Mixer Unit的<code>Input Scope</code>下的各个Element(Bus)设置音频格式和输入回调；将音频源合成到<code>Mixer Unit</code>的<code>Output Scope</code>的<code>Element 0</code>上。</p>
+<p><img style="display:block;" src="https://lifestyle1.cn/Resource/Image/MixerVoice/1.png" alt="Audio Unit"><br>这张图片是一个Audio Unit; 相对于混音的Unit(type是<code>kAudioUnitType_Mixer</code>，subType是<code>kAudioUnitSubType_MultiChannelMixer</code>),我个人理解是这样的<br><img style="display:block" src="https://lifestyle1.cn/Resource/Image/MixerVoice/2.png"><br>左边是<code>Mixer Unit</code>,右边是<code>Remote I/O Unit</code>,在<code>Mixer Unit</code>的Input Scope下，有多少个Element(Bus)，由<code>kAudioUnitProperty_ElementCount</code>来设置，并分别为Mixer Unit的<code>Input Scope</code>下的各个Element(Bus)设置音频格式和输入回调；将音频源合成到<code>Mixer Unit</code>的<code>Output Scope</code>的<code>Element 0</code>上。</p>
 <h3 id="混音输入回调"><a href="#混音输入回调" class="headerlink" title="混音输入回调"></a>混音输入回调</h3><pre><code>static OSStatus renderInput(void *inRefCon,
                         AudioUnitRenderActionFlags *ioActionFlags,
                         const AudioTimeStamp *inTimeStamp,
@@ -524,7 +507,7 @@ return noErr;
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2018 Justin Yang
+    		&copy; 2020 Justin Yang
     	</div>
       <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 		</script>
