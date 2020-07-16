@@ -14,7 +14,7 @@
 <meta property="og:description" content="iOS音频编程之混音需求：多个音频源混合后输出，项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出">
 <meta property="og:image" content="https://lifestyle1.cn/Resource/Image/MixerVoice/1.png">
 <meta property="og:image" content="https://lifestyle1.cn/Resource/Image/MixerVoice/2.png">
-<meta property="og:updated_time" content="2020-07-15T11:13:42.564Z">
+<meta property="og:updated_time" content="2020-07-16T05:52:57.587Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS音频编程之混音">
 <meta name="twitter:description" content="iOS音频编程之混音需求：多个音频源混合后输出，项目说明：项目中采样4路音频源混合，音频源包含44100hz采样率，3000hz采样率，单声道和立体声;使用MixerVoiceHandle封装混音处理，用户只需要初始化音频文件路径数组，调用启动混音接口，就可实现多路音频混合输出">
@@ -312,78 +312,8 @@ for (int i = 0; i &lt; self.sourceArr.count; i++) {
 }
 </code></pre><p>这段代码就是把音频文件以设置的<code>kExtAudioFileProperty_ClientDataFormat</code>音频格式，读出到<code>_mSoundBufferP</code>数组中</p>
 <p>如果您想使用自己准备的音频文件，ExtAudioFileRead读取时返回-50的code，一般是设置读出的目的音频格式(<code>kExtAudioFileProperty_ClientDataFormat</code>)不正确,如源文件是单声道，而想读出的目的格式是立体声</p>
-<h2 id="混音设置"><a href="#混音设置" class="headerlink" title="混音设置"></a>混音设置</h2><pre><code>CheckError(NewAUGraph(&amp;_mGraph), &quot;cant new a graph&quot;);
-
-AUNode mixerNode;
-AUNode outputNode;
-
-AudioComponentDescription mixerACD;
-mixerACD.componentType      = kAudioUnitType_Mixer;
-mixerACD.componentSubType   = kAudioUnitSubType_MultiChannelMixer;
-mixerACD.componentManufacturer = kAudioUnitManufacturer_Apple;
-mixerACD.componentFlags = 0;
-mixerACD.componentFlagsMask = 0;
-
-AudioComponentDescription outputACD;
-outputACD.componentType      = kAudioUnitType_Output;
-outputACD.componentSubType   = kAudioUnitSubType_RemoteIO;
-outputACD.componentManufacturer = kAudioUnitManufacturer_Apple;
-outputACD.componentFlags = 0;
-outputACD.componentFlagsMask = 0;
-
-CheckError(AUGraphAddNode(_mGraph, &amp;mixerACD,
-                          &amp;mixerNode),
-           &quot;cant add node&quot;);
-CheckError(AUGraphAddNode(_mGraph, &amp;outputACD,
-                          &amp;outputNode),
-           &quot;cant add node&quot;);
-
-CheckError(AUGraphConnectNodeInput(_mGraph, mixerNode, 0, outputNode, 0),
-           &quot;connect mixer Node to output node error&quot;);
-
-CheckError(AUGraphOpen(_mGraph), &quot;cant open the graph&quot;);
-
-CheckError(AUGraphNodeInfo(_mGraph, mixerNode,
-                           NULL, &amp;_mMixer),
-           &quot;generate mixer unit error&quot;);
-CheckError(AUGraphNodeInfo(_mGraph, outputNode, NULL, &amp;_mOutput),
-           &quot;generate remote I/O unit error&quot;);
-
-UInt32 numberOfMixBus = (UInt32)self.sourceArr.count;
-
-//配置混音的路数，有多少个音频文件要混音
-CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_ElementCount, kAudioUnitScope_Input, 0,
-                                &amp;numberOfMixBus, sizeof(numberOfMixBus)),
-           &quot;set mix elements error&quot;);
-
-// Increase the maximum frames per slice allows the mixer unit to accommodate the
-//    larger slice size used when the screen is locked.
-UInt32 maximumFramesPerSlice = 4096;
-CheckError( AudioUnitSetProperty (_mMixer,
-                                  kAudioUnitProperty_MaximumFramesPerSlice,
-                                  kAudioUnitScope_Global,
-                                  0,
-                                  &amp;maximumFramesPerSlice,
-                                  sizeof (maximumFramesPerSlice)
-                                  ), &quot;cant set kAudioUnitProperty_MaximumFramesPerSlice&quot;);
-</code></pre><p>​<br>    for (int i = 0; i &lt; numberOfMixBus; i++) {<br>        // setup render callback struct<br>        AURenderCallbackStruct rcbs;<br>        rcbs.inputProc = &renderInput;<br>        rcbs.inputProcRefCon = _mSoundBufferP;</p>
-<pre><code>CheckError(AUGraphSetNodeInputCallback(_mGraph, mixerNode, i, &amp;rcbs),
-           &quot;set mixerNode callback error&quot;);
-</code></pre><p>​<br>        AVAudioFormat *clientFormat = [[AVAudioFormat alloc] initWithCommonFormat:AVAudioPCMFormatFloat32<br>                                                                       sampleRate:kGraphSampleRate<br>                                                                         channels:_mSoundBufferP[i].channelCount<br>                                                                      interleaved:NO];<br>        CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_StreamFormat,<br>                                        kAudioUnitScope_Input, i,<br>                                        clientFormat.streamDescription, sizeof(AudioStreamBasicDescription)),<br>                   “cant set the input scope format on bus[i]”);</p>
-<pre><code>}
-
-double sample = kGraphSampleRate;
-CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_SampleRate,
-                                kAudioUnitScope_Output, 0,&amp;sample , sizeof(sample)),
-           &quot;cant the mixer unit output sample&quot;);
-
-//未设置mixer unit 的kAudioUnitScope_Output的0的音频格式(AudioComponentDescription) 未设置io unit kAudioUnitScope_Output 的element 1的输出AudioComponentDescription
-
-//CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_StreamFormat,
-//kAudioUnitScope_Output, 0, xxxx, sizeof(AudioStreamBasicDescription)), &quot;xxx&quot;);
-
-CheckError(AUGraphInitialize(_mGraph), &quot;cant initial graph&quot;);
-</code></pre><p>新建AUGraph-&gt;新建AUNode(混音Node,音频输出Node)-&gt;将混音Node和音频输出Node连接(连接后，混音后的输出直流入音频输出的Audio Unit)-&gt;从AUNode中得到相应的Audio Unit-&gt;设置Mixer Audio Unit的混音路数-&gt;设置各路混音的回调函数，输入的音频格式-&gt;设置混音个输出采样率-&gt;Initialize AUGraph</p>
+<h2 id="混音设置"><a href="#混音设置" class="headerlink" title="混音设置"></a>混音设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">CheckError(NewAUGraph(&amp;_mGraph), &quot;cant new a graph&quot;);</span><br><span class="line">  </span><br><span class="line">AUNode mixerNode;</span><br><span class="line">AUNode outputNode;</span><br><span class="line"></span><br><span class="line">AudioComponentDescription mixerACD;</span><br><span class="line">mixerACD.componentType      = kAudioUnitType_Mixer;</span><br><span class="line">mixerACD.componentSubType   = kAudioUnitSubType_MultiChannelMixer;</span><br><span class="line">mixerACD.componentManufacturer = kAudioUnitManufacturer_Apple;</span><br><span class="line">mixerACD.componentFlags = 0;</span><br><span class="line">mixerACD.componentFlagsMask = 0;</span><br><span class="line"></span><br><span class="line">AudioComponentDescription outputACD;</span><br><span class="line">outputACD.componentType      = kAudioUnitType_Output;</span><br><span class="line">outputACD.componentSubType   = kAudioUnitSubType_RemoteIO;</span><br><span class="line">outputACD.componentManufacturer = kAudioUnitManufacturer_Apple;</span><br><span class="line">outputACD.componentFlags = 0;</span><br><span class="line">outputACD.componentFlagsMask = 0;</span><br><span class="line"></span><br><span class="line">CheckError(AUGraphAddNode(_mGraph, &amp;mixerACD,</span><br><span class="line">                          &amp;mixerNode),</span><br><span class="line">           &quot;cant add node&quot;);</span><br><span class="line">CheckError(AUGraphAddNode(_mGraph, &amp;outputACD,</span><br><span class="line">                          &amp;outputNode),</span><br><span class="line">           &quot;cant add node&quot;);</span><br><span class="line"></span><br><span class="line">CheckError(AUGraphConnectNodeInput(_mGraph, mixerNode, 0, outputNode, 0),</span><br><span class="line">           &quot;connect mixer Node to output node error&quot;);</span><br><span class="line"></span><br><span class="line">CheckError(AUGraphOpen(_mGraph), &quot;cant open the graph&quot;);</span><br><span class="line"></span><br><span class="line">CheckError(AUGraphNodeInfo(_mGraph, mixerNode,</span><br><span class="line">                           NULL, &amp;_mMixer),</span><br><span class="line">           &quot;generate mixer unit error&quot;);</span><br><span class="line">CheckError(AUGraphNodeInfo(_mGraph, outputNode, NULL, &amp;_mOutput),</span><br><span class="line">           &quot;generate remote I/O unit error&quot;);</span><br><span class="line"></span><br><span class="line">UInt32 numberOfMixBus = (UInt32)self.sourceArr.count;</span><br><span class="line"></span><br><span class="line">//配置混音的路数，有多少个音频文件要混音</span><br><span class="line">CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_ElementCount, kAudioUnitScope_Input, 0,</span><br><span class="line">                                &amp;numberOfMixBus, sizeof(numberOfMixBus)),</span><br><span class="line">           &quot;set mix elements error&quot;);</span><br><span class="line"></span><br><span class="line">// Increase the maximum frames per slice allows the mixer unit to accommodate the</span><br><span class="line">//    larger slice size used when the screen is locked.</span><br><span class="line">UInt32 maximumFramesPerSlice = 4096;</span><br><span class="line">CheckError( AudioUnitSetProperty (_mMixer,</span><br><span class="line">                                  kAudioUnitProperty_MaximumFramesPerSlice,</span><br><span class="line">                                  kAudioUnitScope_Global,</span><br><span class="line">                                  0,</span><br><span class="line">                                  &amp;maximumFramesPerSlice,</span><br><span class="line">                                  sizeof (maximumFramesPerSlice)</span><br><span class="line">                                  ), &quot;cant set kAudioUnitProperty_MaximumFramesPerSlice&quot;);</span><br><span class="line">    for (int i = 0; i &lt; numberOfMixBus; i++) &#123;</span><br><span class="line">        // setup render callback struct</span><br><span class="line">        AURenderCallbackStruct rcbs;</span><br><span class="line">        rcbs.inputProc = &amp;renderInput;</span><br><span class="line">        rcbs.inputProcRefCon = _mSoundBufferP;</span><br><span class="line">        </span><br><span class="line">        CheckError(AUGraphSetNodeInputCallback(_mGraph, mixerNode, i, &amp;rcbs),</span><br><span class="line">                           &quot;set mixerNode callback error&quot;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        AVAudioFormat *clientFormat = [[AVAudioFormat alloc] </span><br><span class="line">        initWithCommonFormat:AVAudioPCMFormatFloat32  </span><br><span class="line">        sampleRate:kGraphSampleRate</span><br><span class="line">        channels:_mSoundBufferP[i].channelCount</span><br><span class="line">        interleaved:NO];</span><br><span class="line">        CheckError(AudioUnitSetProperty(_mMixer,</span><br><span class="line">        kAudioUnitProperty_StreamFormat,</span><br><span class="line">        kAudioUnitScope_Input, i,</span><br><span class="line">        clientFormat.streamDescription, 	</span><br><span class="line">        sizeof(AudioStreamBasicDescription)),</span><br><span class="line">                           &quot;cant set the input scope format on bus[i]&quot;);       </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    double sample = kGraphSampleRate;</span><br><span class="line">    CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_SampleRate,</span><br><span class="line">                                    kAudioUnitScope_Output, 0,&amp;sample , sizeof(sample)),</span><br><span class="line">               &quot;cant the mixer unit output sample&quot;);</span><br><span class="line">    </span><br><span class="line">    //未设置mixer unit 的kAudioUnitScope_Output的0的音频格式(AudioComponentDescription) 未设置io unit kAudioUnitScope_Output 的element 1的输出AudioComponentDescription</span><br><span class="line">    </span><br><span class="line">    //CheckError(AudioUnitSetProperty(_mMixer, kAudioUnitProperty_StreamFormat,</span><br><span class="line">    //kAudioUnitScope_Output, 0, xxxx, sizeof(AudioStreamBasicDescription)), &quot;xxx&quot;);</span><br><span class="line">    </span><br><span class="line">CheckError(AUGraphInitialize(_mGraph), &quot;cant initial graph&quot;);</span><br></pre></td></tr></table></figure>
+<p>新建AUGraph-&gt;新建AUNode(混音Node,音频输出Node)-&gt;将混音Node和音频输出Node连接(连接后，混音后的输出流入音频输出的Audio Unit)-&gt;从AUNode中得到相应的Audio Unit-&gt;设置Mixer Audio Unit的混音路数-&gt;设置各路混音的回调函数，输入的音频格式-&gt;设置混音个输出采样率-&gt;Initialize AUGraph</p>
 <hr>
 <p><img style="display:block;" src="https://lifestyle1.cn/Resource/Image/MixerVoice/1.png" alt="Audio Unit"><br>这张图片是一个Audio Unit; 相对于混音的Unit(type是<code>kAudioUnitType_Mixer</code>，subType是<code>kAudioUnitSubType_MultiChannelMixer</code>),我个人理解是这样的<br><img style="display:block" src="https://lifestyle1.cn/Resource/Image/MixerVoice/2.png"><br>左边是<code>Mixer Unit</code>,右边是<code>Remote I/O Unit</code>,在<code>Mixer Unit</code>的Input Scope下，有多少个Element(Bus)，由<code>kAudioUnitProperty_ElementCount</code>来设置，并分别为Mixer Unit的<code>Input Scope</code>下的各个Element(Bus)设置音频格式和输入回调；将音频源合成到<code>Mixer Unit</code>的<code>Output Scope</code>的<code>Element 0</code>上。</p>
 <h3 id="混音输入回调"><a href="#混音输入回调" class="headerlink" title="混音输入回调"></a>混音输入回调</h3><pre><code>static OSStatus renderInput(void *inRefCon,
@@ -427,7 +357,7 @@ return noErr;
 <h3 id="启动或停止AUGraph"><a href="#启动或停止AUGraph" class="headerlink" title="启动或停止AUGraph"></a>启动或停止<code>AUGraph</code></h3><p>初始化完成后，使用<code>AUGraphStart(_mGraph)</code>启动混音，手机就会输出混合后的音频了；使用<code>AUGraphStop(_mGraph)</code>停止输出。</p>
 <h3 id="音量和各路音频使能控制"><a href="#音量和各路音频使能控制" class="headerlink" title="音量和各路音频使能控制"></a>音量和各路音频使能控制</h3><p>可以单独控制各路音频的音量(对<code>Mixer Unit</code>的<code>Input Scope</code>下的各路<code>Element</code>的<code>kMultiChannelMixerParam_Volume</code>设置音量)，也可以控制整体的音量(对<code>Mixer Unit</code>的<code>Output Scope</code>下的<code>Element 0</code>的<code>kMultiChannelMixerParam_Volume</code>设置音量)；<br>对<code>Mixer Unit</code>的<code>Input Scope</code>下的各路<code>Element</code>的<code>kMultiChannelMixerParam_Enable</code>设置使能此路音频信号是否加入到混音中)</p>
 <p><a href="https://github.com/JustinYangJing/VoiceMixer.git" target="_blank" rel="external">代码下载地址</a><br><a href="https://developer.apple.com/library/content/documentation/MusicAudio/Conceptual/AudioUnitHostingGuide_iOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009492" target="_blank" rel="external">参考资料</a><br><a href="https://developer.apple.com/library/content/samplecode/iOSMultichannelMixerTest/Introduction/Intro.html#//apple_ref/doc/uid/TP40016060" target="_blank" rel="external">参考代码</a></p>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
     
