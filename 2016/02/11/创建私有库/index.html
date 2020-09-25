@@ -18,16 +18,16 @@ git clone https://github.">
 在github上新建仓库
 在github上新建MySpecs仓库(您可以命名为任意名字)，并新建 TestLib(您可以新建任意多个仓库，此仓库中的 工程便是您用pod 管理的第三方库)仓库。
 git clone https://github.">
-<meta property="og:image" content="https://github.com/JustinYangJing/Resource/blob/master/Image/1.png?raw=true">
-<meta property="og:image" content="https://github.com/JustinYangJing/Resource/blob/master/Image/2.png?raw=true">
-<meta property="og:updated_time" content="2016-06-12T02:14:29.000Z">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/1.png?raw=true">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/2.png?raw=true">
+<meta property="og:updated_time" content="2020-09-25T09:45:05.959Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="创建私有库">
 <meta name="twitter:description" content="Cocoapoads建立私有库该教程展示如何在github上建立自己的私有库，按照此教程也可应用在公司的git服务器上，使用pod对自己编写的库进行管理。
 在github上新建仓库
 在github上新建MySpecs仓库(您可以命名为任意名字)，并新建 TestLib(您可以新建任意多个仓库，此仓库中的 工程便是您用pod 管理的第三方库)仓库。
 git clone https://github.">
-<meta name="twitter:image" content="https://github.com/JustinYangJing/Resource/blob/master/Image/1.png?raw=true">
+<meta name="twitter:image" content="https://lifestyle1.cn/Resource/Image/1.png?raw=true">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
   
@@ -83,7 +83,7 @@ git clone https://github.">
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -232,8 +232,8 @@ git clone https://github.">
 </li>
 </ol>
 <h2 id="新建库工程和podspec文件"><a href="#新建库工程和podspec文件" class="headerlink" title="新建库工程和podspec文件"></a>新建库工程和podspec文件</h2><ol>
-<li><p>在上一步中clone下的<code>TestLib</code>文件夹下新建您的库工程，我使用的是新建framework,如何新建framework，请参看<a href="http://blog.csdn.net/it_yangjing/article/details/50616256" target="_blank" rel="external">这篇教程</a>(当然您可以创建其他xcode工程)<br><img style="display:block;width:80%;" src="https://github.com/JustinYangJing/Resource/blob/master/Image/1.png?raw=true" alt="img1"></p>
-<p> testLib工程结构如下图<br><img style="display:block;width:80%;" src="https://github.com/JustinYangJing/Resource/blob/master/Image/2.png?raw=true" alt="img2"></p>
+<li><p>在上一步中clone下的<code>TestLib</code>文件夹下新建您的库工程，我使用的是新建framework,如何新建framework，请参看<a href="http://blog.csdn.net/it_yangjing/article/details/50616256" target="_blank" rel="external">这篇教程</a>(当然您可以创建其他xcode工程)<br><img style="display:block;width:80%;" src="https://lifestyle1.cn/Resource/Image/1.png?raw=true" alt="img1"></p>
+<p> testLib工程结构如下图<br><img style="display:block;width:80%;" src="https://lifestyle1.cn/Resource/Image/2.png?raw=true" alt="img2"></p>
 </li>
 </ol>
 <blockquote>
@@ -255,16 +255,19 @@ s.source_files  = &quot;TestLib/TestLib.h&quot;
     s2.source_files = &quot;TestLib/Test/**/*.{h,m}&quot;
   end
   s.framework  = &quot;UIKit&quot;
-</code></pre><blockquote>
+</code></pre></li>
+</ol>
+<blockquote>
 <p>如何编写podsepc请自行查阅相关资料</p>
-</blockquote>
-</li>
+<ol>
 <li><code>TestLib.podspec</code>编写完整后，请使用<code>pod spec lint TestLib.podspec --verbose</code>命令检查<code>podspec</code>文件的有效性。根据提示消除所有错误，最后使用<code>pod spec lint TestLib.podspec --allow-warnings</code>忽略警告。</li>
-<li><p>添加私有repo到CocoaPods中</p>
+<li>添加私有repo到CocoaPods中</li>
+</ol>
+</blockquote>
 <pre><code>pod repo add mySpecs https://github.com/xxxx/MySpecs.git
 命令格式如 pod repo add specsName specsUrl
 请使用您自己的specsName和存放podspec的仓库地址
-</code></pre></li>
+</code></pre><ol>
 <li><p>运行<code>./updateSpec.sh TestLib.podspec</code>脚本，该脚本的主要功能是将podspec文件copy到<code>.cocoapods/repos/mySpecs</code>下，并把修改push到github上。<a href="https://github.com/JustinYangJing/TestLib" target="_blank" rel="external">脚本详细内容</a></p>
 <blockquote>
 <p>您需要将脚本里的mySpecs换成您自己的specsName</p>

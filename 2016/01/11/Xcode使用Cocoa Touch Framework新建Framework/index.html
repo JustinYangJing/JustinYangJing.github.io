@@ -16,19 +16,19 @@ step1打开Xcode,新建工程，选择Cocoa Touch Framework,命名为xibFramewor
 <meta property="og:description" content="网上有很多教程使用Xcode新建Framework的教程，不过使用的是Cocoa Touch Static Library，Xcode 6有一个新的功能,通过Cocoa Touch Framework。能直接生成Framework。
 
 step1打开Xcode,新建工程，选择Cocoa Touch Framework,命名为xibFramework.">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/1.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/2.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/3.jpeg">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/4.jpeg">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/5.jpeg">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/6.jpeg">
-<meta property="og:updated_time" content="2016-08-01T09:01:45.000Z">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Framework/1.png">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Framework/2.png">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Framework/3.jpeg">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Framework/4.jpeg">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Framework/5.jpeg">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Framework/6.jpeg">
+<meta property="og:updated_time" content="2020-09-25T09:44:23.686Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xcode使用Cocoa Touch Framework新建Framework">
 <meta name="twitter:description" content="网上有很多教程使用Xcode新建Framework的教程，不过使用的是Cocoa Touch Static Library，Xcode 6有一个新的功能,通过Cocoa Touch Framework。能直接生成Framework。
 
 step1打开Xcode,新建工程，选择Cocoa Touch Framework,命名为xibFramework.">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/1.png">
+<meta name="twitter:image" content="https://lifestyle1.cn/Resource/Image/Framework/1.png">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
   
@@ -84,7 +84,7 @@ step1打开Xcode,新建工程，选择Cocoa Touch Framework,命名为xibFramewor
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -229,29 +229,30 @@ step1打开Xcode,新建工程，选择Cocoa Touch Framework,命名为xibFramewor
         <blockquote>
 <p>网上有很多教程使用Xcode新建Framework的教程，不过使用的是Cocoa Touch Static Library，Xcode 6有一个新的功能,通过Cocoa Touch Framework。能直接生成Framework。</p>
 </blockquote>
-<h2 id="step1"><a href="#step1" class="headerlink" title="step1"></a>step1</h2><p>打开Xcode,新建工程，选择Cocoa Touch Framework,命名为xibFramework.<br><img style="display:block;width:80%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/1.png"><br><a id="more"></a></p>
-<h2 id="step2"><a href="#step2" class="headerlink" title="step2"></a>step2</h2><p>1）在framework中添加类，资源等文件。<br><img style="display:block;width:50%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/2.png"></p>
+<h2 id="step1"><a href="#step1" class="headerlink" title="step1"></a>step1</h2><p>打开Xcode,新建工程，选择Cocoa Touch Framework,命名为xibFramework.</p>
+<p><img style="display:block;width:80%;" src="https://lifestyle1.cn/Resource/Image/Framework/1.png"><br><a id="more"></a></p>
+<h2 id="step2"><a href="#step2" class="headerlink" title="step2"></a>step2</h2><p>1）在framework中添加类，资源等文件。<br><img style="display:block;width:50%;" src="https://lifestyle1.cn/Resource/Image/Framework/2.png"></p>
 <blockquote>
 <p>如上图所示，在Resource中添加xib,在xibFramework.xvassets添加framework中所需要使用到的图片。</p>
 </blockquote>
 <p>2）在xibFramework.h中导入<code>#import &lt;xibFramework/CustomView.h&gt;</code></p>
-<p><img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/3.jpeg"></p>
+<p><img style="display:block;width:100%;" src="https://lifestyle1.cn/Resource/Image/Framework/3.jpeg"></p>
 <blockquote>
 <p>xibFramework是新建framework时，自动生成的，把所有需要公开的类的头文件包含在这个.h文件中，在使用framework时，只需要导入这个.h文件即可</p>
 </blockquote>
-<p>3)选中<code>xibFrmework|Build Phases</code>,在<code>Headers</code>中将所有需要公开的头文件拖入<code>Public</code>中.在<code>Run Script</code>中添加<code>ios-build-framework-script.sh</code>脚本(<a href="https://github.com/JustinYangJing/Resource/blob/master/Image/Framework/ios-build-framework-script.sh" target="_blank" rel="external">下载地址</a>)。<br><img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/4.jpeg"></p>
+<p>3)选中<code>xibFrmework|Build Phases</code>,在<code>Headers</code>中将所有需要公开的头文件拖入<code>Public</code>中.在<code>Run Script</code>中添加<code>ios-build-framework-script.sh</code>脚本(<a href="https://github.com/JustinYangJing/Resource/blob/master/Image/Framework/ios-build-framework-script.sh" target="_blank" rel="external">下载地址</a>)。<br><img style="display:block;width:100%;" src="https://lifestyle1.cn/Resource/Image/Framework/4.jpeg"></p>
 <blockquote>
 <p>若<code>Build Phases</code>中没有<code>Headers</code>和<code>Run Script</code>，在右上角的+处将他们加入到<code>Bulid Phases</code>中</p>
 <hr>
 <p><code>shell</code>脚本的路径要写对，否则编译的时候会找不到，demo中shell脚本放在<code>xibFramework/xibFramework</code></p>
 </blockquote>
 <p>4)脚本解析</p>
-<p>这个脚本是生成支持arm64 armv7 和i386 x86_64(i386和x86_64并为用xcodebuild命令来生成，当你选择在模拟器下编译时，会生成支持这两种架构的framework)架构的framework。该脚本只允许用户在模拟器下编译，否则会报错，生成后的framework存放在工程目录的Release-universal或者Debug-universal目录下<br><img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/5.jpeg"></p>
+<p>这个脚本是生成支持arm64 armv7 和i386 x86_64(i386和x86_64并为用xcodebuild命令来生成，当你选择在模拟器下编译时，会生成支持这两种架构的framework)架构的framework。该脚本只允许用户在模拟器下编译，否则会报错，生成后的framework存放在工程目录的Release-universal或者Debug-universal目录下<br><img style="display:block;width:100%;" src="https://lifestyle1.cn/Resource/Image/Framework/5.jpeg"></p>
 <blockquote>
 <p>到这一步，就已经生成了framework，下面对framework使用</p>
 </blockquote>
 <h2 id="step3"><a href="#step3" class="headerlink" title="step3"></a>step3</h2><p>1)新建工程,选择<code>Single View Application</code>，命名为<code>UseFrmeworkDemo</code></p>
-<p>2)将<code>xibFramework.framework</code>拖入<br><code>UseFrmeworkDemo</code>中，并使用<code>framework</code><br><img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Framework/6.jpeg"></p>
+<p>2)将<code>xibFramework.framework</code>拖入<br><code>UseFrmeworkDemo</code>中，并使用<code>framework</code><br><img style="display:block;width:100%;" src="https://lifestyle1.cn/Resource/Image/Framework/6.jpeg"></p>
 <p>选择<code>UseFrameworkDemo|General</code>,在<code>Embedded Binaries</code>和<code>Linked Frameworks and Libraries</code>中加入xibFramework，在拖入<code>xibFramework</code>时，<code>Linked Frameworks and Libraries</code>中就会加入这个<code>framework</code>.</p>
 <p>3)<code>command+R</code>运行工程，可以看到<code>xibFramework</code>的控件在<code>UseFrameworkDemo</code>中能正常使用了.</p>
 <hr>

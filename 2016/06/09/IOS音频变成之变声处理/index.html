@@ -22,10 +22,10 @@ self.session = [AVAudioSession sharedInstance];
 NSError *error;
 self.session = [AVAudioSession sharedInstance];
 [self.sess">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/1.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/2.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/3.png">
-<meta property="og:updated_time" content="2017-04-19T12:17:40.000Z">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Audio/1.png">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Audio/2.png">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/Audio/3.png">
+<meta property="og:updated_time" content="2020-09-25T09:41:04.006Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS音频编程之变声处理">
 <meta name="twitter:description" content="iOS音频编程之变声处理需求：耳塞Mic实时录音，变声处理后实时输出初始化程序使用44100HZ的频率对原始的音频数据进行采样，并在音频输入的回调中处理采样的数据。1）对AVAudioSession的一些设置
@@ -34,7 +34,7 @@ self.session = [AVAudioSession sharedInstance];
 NSError *error;
 self.session = [AVAudioSession sharedInstance];
 [self.sess">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/1.png">
+<meta name="twitter:image" content="https://lifestyle1.cn/Resource/Image/Audio/1.png">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
   
@@ -90,7 +90,7 @@ self.session = [AVAudioSession sharedInstance];
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -259,60 +259,15 @@ acd.componentFlagsMask = 0;
 acd.componentManufacturer = kAudioUnitManufacturer_Apple;
 AudioComponent inputComponent = AudioComponentFindNext(NULL, &amp;acd);
 AudioComponentInstanceNew(inputComponent, &amp;_toneUnit);
-</code></pre><p> 3）对AudioComponentInstance的一些初始化设置<br> <center><br>    <img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/1.png" alt="I/O unit"><br> </center><br> 这张图蓝色框中的部分就是一个<code>I/O Unit</code>(<code>AudioComponentInstance</code>的实例).图中的<code>Element 0</code>连接<code>Speaker</code>,也叫<code>Output Bus</code>;<code>Element 1</code>连接<code>Mic</code>,也叫<code>Input Bus</code>.初始化它，就是对再这些Bus上的音频流的格式，设置输入输出的回调函数等。</p>
-<pre><code> UInt32 enable = 1;
-AudioUnitSetProperty(_toneUnit,
-                     kAudioOutputUnitProperty_EnableIO,
-                     kAudioUnitScope_Input,
-                     kInputBus,
-                     &amp;enable,
-                     sizeof(enable));
-AudioUnitSetProperty(_toneUnit,
-                     kAudioOutputUnitProperty_EnableIO,
-                     kAudioUnitScope_Output,
-                     kOutoutBus, &amp;enable, sizeof(enable));
+</code></pre><p> 3）对AudioComponentInstance的一些初始化设置</p>
+ <center><br>    <img style="display:block;width:100%;" src="https://lifestyle1.cn/Resource/Image/Audio/1.png" alt="I/O unit"><br> </center>
 
-mAudioFormat.mSampleRate         = kSmaple;//采样率
-mAudioFormat.mFormatID           = kAudioFormatLinearPCM;//PCM采样
-mAudioFormat.mFormatFlags        = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-mAudioFormat.mFramesPerPacket    = 1;//每个数据包多少帧
-mAudioFormat.mChannelsPerFrame   = 1;//1单声道，2立体声
-mAudioFormat.mBitsPerChannel     = 16;//语音每采样点占用位数
-mAudioFormat.mBytesPerFrame      = mAudioFormat.mBitsPerChannel*mAudioFormat.mChannelsPerFrame/8;//每帧的bytes数
-mAudioFormat.mBytesPerPacket     = mAudioFormat.mBytesPerFrame*mAudioFormat.mFramesPerPacket;//每个数据包的bytes总数，每帧的bytes数＊每个数据包的帧数
-mAudioFormat.mReserved           = 0;
-
-CheckError(AudioUnitSetProperty(_toneUnit,
-                                kAudioUnitProperty_StreamFormat,
-                                kAudioUnitScope_Input, kOutoutBus,
-                                &amp;mAudioFormat, sizeof(mAudioFormat)),
-           &quot;couldn&apos;t set the remote I/O unit&apos;s output client format&quot;);
-CheckError(AudioUnitSetProperty(_toneUnit,
-                                kAudioUnitProperty_StreamFormat,
-                                kAudioUnitScope_Output, kInputBus,
-                                &amp;mAudioFormat, sizeof(mAudioFormat)),
-           &quot;couldn&apos;t set the remote I/O unit&apos;s input client format&quot;);
-
-CheckError(AudioUnitSetProperty(_toneUnit,
-                                kAudioOutputUnitProperty_SetInputCallback,
-                                kAudioUnitScope_Output,
-                                kInputBus,
-                                &amp;_inputProc, sizeof(_inputProc)),
-           &quot;couldnt set remote i/o render callback for input&quot;);
-
-CheckError(AudioUnitSetProperty(_toneUnit,
-                                kAudioUnitProperty_SetRenderCallback,
-                                kAudioUnitScope_Input,
-                                kOutoutBus,
-                                &amp;_outputProc, sizeof(_outputProc)),
-           &quot;couldnt set remote i/o render callback for output&quot;);
-
-CheckError(AudioUnitInitialize(_toneUnit),
-           &quot;couldn&apos;t initialize the remote I/O unit&quot;);
-</code></pre><blockquote>
+<p> 这张图蓝色框中的部分就是一个<code>I/O Unit</code>(<code>AudioComponentInstance</code>的实例).图中的<code>Element 0</code>连接<code>Speaker</code>,也叫<code>Output Bus</code>;<code>Element 1</code>连接<code>Mic</code>,也叫<code>Input Bus</code>.初始化它，就是对再这些Bus上的音频流的格式，设置输入输出的回调函数等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">UInt32 enable = 1;</span><br><span class="line">    AudioUnitSetProperty(_toneUnit,</span><br><span class="line">                         kAudioOutputUnitProperty_EnableIO,</span><br><span class="line">                         kAudioUnitScope_Input,</span><br><span class="line">                         kInputBus,</span><br><span class="line">                         &amp;enable,</span><br><span class="line">                         sizeof(enable));</span><br><span class="line">    AudioUnitSetProperty(_toneUnit,</span><br><span class="line">                         kAudioOutputUnitProperty_EnableIO,</span><br><span class="line">                         kAudioUnitScope_Output,</span><br><span class="line">                         kOutoutBus, &amp;enable, sizeof(enable));</span><br><span class="line">    mAudioFormat.mSampleRate         = kSmaple;//采样率</span><br><span class="line">    mAudioFormat.mFormatID           = kAudioFormatLinearPCM;//PCM采样</span><br><span class="line">    mAudioFormat.mFormatFlags        = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;</span><br><span class="line">    mAudioFormat.mFramesPerPacket    = 1;//每个数据包多少帧</span><br><span class="line">    mAudioFormat.mChannelsPerFrame   = 1;//1单声道，2立体声</span><br><span class="line">    mAudioFormat.mBitsPerChannel     = 16;//语音每采样点占用位数</span><br><span class="line">    mAudioFormat.mBytesPerFrame      = mAudioFormat.mBitsPerChannel*mAudioFormat.mChannelsPerFrame/8;//每帧的bytes数</span><br><span class="line">    mAudioFormat.mBytesPerPacket     = mAudioFormat.mBytesPerFrame*mAudioFormat.mFramesPerPacket;//每个数据包的bytes总数，每帧的bytes数＊每个数据包的帧数</span><br><span class="line">    mAudioFormat.mReserved           = 0;</span><br><span class="line">    </span><br><span class="line">    CheckError(AudioUnitSetProperty(_toneUnit,</span><br><span class="line">                                    kAudioUnitProperty_StreamFormat,</span><br><span class="line">                                    kAudioUnitScope_Input, kOutoutBus,</span><br><span class="line">                                    &amp;mAudioFormat, sizeof(mAudioFormat)),</span><br><span class="line">               &quot;couldn&apos;t set the remote I/O unit&apos;s output client format&quot;);</span><br><span class="line">    CheckError(AudioUnitSetProperty(_toneUnit,</span><br><span class="line">                                    kAudioUnitProperty_StreamFormat,</span><br><span class="line">                                    kAudioUnitScope_Output, kInputBus,</span><br><span class="line">                                    &amp;mAudioFormat, sizeof(mAudioFormat)),</span><br><span class="line">               &quot;couldn&apos;t set the remote I/O unit&apos;s input client format&quot;);</span><br><span class="line">    </span><br><span class="line">    CheckError(AudioUnitSetProperty(_toneUnit,</span><br><span class="line">                                    kAudioOutputUnitProperty_SetInputCallback,</span><br><span class="line">                                    kAudioUnitScope_Output,</span><br><span class="line">                                    kInputBus,</span><br><span class="line">                                    &amp;_inputProc, sizeof(_inputProc)),</span><br><span class="line">               &quot;couldnt set remote i/o render callback for input&quot;);</span><br><span class="line">    </span><br><span class="line">    CheckError(AudioUnitSetProperty(_toneUnit,</span><br><span class="line">                                    kAudioUnitProperty_SetRenderCallback,</span><br><span class="line">                                    kAudioUnitScope_Input,</span><br><span class="line">                                    kOutoutBus,</span><br><span class="line">                                    &amp;_outputProc, sizeof(_outputProc)),</span><br><span class="line">               &quot;couldnt set remote i/o render callback for output&quot;);</span><br><span class="line">    </span><br><span class="line">    CheckError(AudioUnitInitialize(_toneUnit),</span><br><span class="line">               &quot;couldn&apos;t initialize the remote I/O unit&quot;);</span><br></pre></td></tr></table></figure>
+<blockquote>
 <p>注意<code>kAudioUnitScope_Output/kAudioUnitScope_Input</code>和<code>kOutput/kInput</code>的组合。设置输入输出使能时，Scope_Input下的kInput直接和Mic相连，所以是选用它们两;设置输出使能也类似。而设置音频的格式时，要选用Scope_Input下的kOutput和Scope_OutPut下的kInput,如果组合错误，为会返回-10865的错误码，意思说设置了只读属性，而在官方文档中也有说明,This hardware connection—at the input scope of element 1—is opaque to you. Your first access to audio data entering from the input hardware is at the output scope of element 1, output scope of element 0 is opaque。(<strong>疑问？在设置输入输出回调时以及Scope选择Input和Output以及Global都可以，但是官方文档中说<code>Your first access to audio data entering from the input hardware is at the output scope of element 1</code></strong>)</p>
 </blockquote>
-<h2 id="音频处理"><a href="#音频处理" class="headerlink" title="音频处理"></a>音频处理</h2><h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><p>变声操作实际是对声音信号的频谱进行搬移，在时域中乘以一个三角函数相当于在频域上进行了频谱的搬移。但使得频谱搬移了±𝑓。由下图傅里叶变化公式说明<br><img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/2.png" alt="Fourier"><br>频谱搬移后，要把搬移的F(w-w。)的部分滤除。将声音的原始PCM放到Matlab中分析出频谱，然后进行搬移(<strong>实际上，我滤波这一步是失败的，还请小伙伴们告知我应该选一个怎样的滤波器</strong>)</p>
+<h2 id="音频处理"><a href="#音频处理" class="headerlink" title="音频处理"></a>音频处理</h2><h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><p>变声操作实际是对声音信号的频谱进行搬移，在时域中乘以一个三角函数相当于在频域上进行了频谱的搬移。但使得频谱搬移了±𝑓。由下图傅里叶变化公式说明<br><img style="display:block;width:100%;" src="https://lifestyle1.cn/Resource/Image/Audio/2.png" alt="Fourier"><br>频谱搬移后，要把搬移的F(w-w。)的部分滤除。将声音的原始PCM放到Matlab中分析出频谱，然后进行搬移(<strong>实际上，我滤波这一步是失败的，还请小伙伴们告知我应该选一个怎样的滤波器</strong>)</p>
 <p>1）写一个专门手机原始声音数据的程序，将声音数据保存到模拟上(用模拟器收集的声音，方便直接将写入到沙盒中的文件拷出来)。</p>
 <p>2) 将声音数据用matlab读出来(注意模拟器和matlab处理数据时的大小端，专门把数据转换读出来看了，两边都应该是小端模式)，并分析和频移其频谱<br>matlab代码</p>
 <pre><code>FID=fopen(&apos;record.txt&apos;,&apos;r&apos;);
@@ -333,7 +288,7 @@ A2=A.*cos_y;
 Y2=fft(A2);
 subplot(212);
 plot(f,abs(Y2(1:length(A)/2)));
-</code></pre><p><img style="display:block;width:100%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/Audio/3.png" alt="FFT "></p>
+</code></pre><p><img style="display:block;width:100%;" src="https://lifestyle1.cn/Resource/Image/Audio/3.png" alt="FFT "></p>
 <p><strong>原始信号的频谱从0频开始?频率1000Hz后，虑除的就是小于1000hz的频率？实际在我的程序中对频谱只进行了200hz的搬移，那选一个大于200hz的IIR高通滤波器？</strong></p>
 <p>3）用matlab设计滤波器，并得到滤波器参数.我用matlab的fdatool工具设计了一个5阶的IIR高通滤波器，截止频率为200hz。导出参数，用<code>[Bb,Ba]=sos2tf(SOS,G);</code>得出滤波器参数。</p>
 <p>4）得到的Bb和Ba参数后，可以直接代入输入输出的差分方程得出滤波器的输出y(n)</p>
@@ -383,30 +338,8 @@ return status;
 </code></pre><blockquote>
 <p>在频移的处理时，本来要对频移后的序列滤波的，<strong>但是滤波后，全部是杂音</strong>，所以删除掉了这部分代码，在提供的完整代码中有这部分删除掉的代码。存储数据中循环队列来存。</p>
 </blockquote>
-<p>2）输出回调</p>
-<pre><code>OSStatus outputRenderTone(
-                      void *inRefCon,
-                      AudioUnitRenderActionFlags     *ioActionFlags,
-                      const AudioTimeStamp         *inTimeStamp,
-                      UInt32                         inBusNumber,
-                      UInt32                         inNumberFrames,
-                      AudioBufferList             *ioData)
-
-{
-ViewController *THIS=(__bridge ViewController*)inRefCon;
-
-SInt16 *outSamplesChannelLeft   = (SInt16 *)ioData-&gt;mBuffers[0].mData;
-RawData *rawData = &amp;THIS-&gt;_rawData;
-for (UInt32 frameNumber = 0; frameNumber &lt; inNumberFrames; ++frameNumber) {
-   if (rawData-&gt;front != rawData-&gt;rear) {
-        outSamplesChannelLeft[frameNumber] = (rawData-&gt;receiveRawData[rawData-&gt;front]);
-        rawData-&gt;front = (rawData-&gt;front+1)%kRawDataLen;
-
-    }
-}
-return 0;
-}
-</code></pre><p>以上实现了对音频的实时录入变声后实时输出。没有滤波，听起来声音有点怪。😂😂😂大学的时候学的数字信号处理已经还给老师，关于信号处理这部分还请知道的小伙伴指点指点,想实现男女声音转化的效果。</p>
+<p>2）输出回调<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">	OSStatus outputRenderTone(</span><br><span class="line">	                      void *inRefCon,</span><br><span class="line">	                      AudioUnitRenderActionFlags 	*ioActionFlags,</span><br><span class="line">	                      const AudioTimeStamp 		*inTimeStamp,</span><br><span class="line">	                      UInt32 						inBusNumber,</span><br><span class="line">	                      UInt32 						inNumberFrames,</span><br><span class="line">	                      AudioBufferList 			*ioData)</span><br><span class="line">	</span><br><span class="line">	&#123;</span><br><span class="line">	ViewController *THIS=(__bridge ViewController*)inRefCon;</span><br><span class="line">	</span><br><span class="line">	SInt16 *outSamplesChannelLeft   = (SInt16 *)ioData-&gt;mBuffers[0].mData;</span><br><span class="line">	RawData *rawData = &amp;THIS-&gt;_rawData;</span><br><span class="line">	for (UInt32 frameNumber = 0; frameNumber &lt; inNumberFrames; ++frameNumber) &#123;</span><br><span class="line">if (rawData-&gt;front != rawData-&gt;rear) &#123;</span><br><span class="line">            outSamplesChannelLeft[frameNumber] = (rawData-&gt;receiveRawData[rawData-&gt;front]);</span><br><span class="line">            rawData-&gt;front = (rawData-&gt;front+1)%kRawDataLen;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上实现了对音频的实时录入变声后实时输出。没有滤波，听起来声音有点怪。😂😂😂大学的时候学的数字信号处理已经还给老师，关于信号处理这部分还请知道的小伙伴指点指点,想实现男女声音转化的效果。</p>
 <p><a href="https://github.com/JustinYangJing/ConvertVoiceTest.git" target="_blank" rel="external">代码下载地址</a></p>
 
       

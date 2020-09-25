@@ -12,14 +12,14 @@
 <meta property="og:url" content="http://yoursite.com/2015/05/10/ScrollView自动布局/index.html">
 <meta property="og:site_name" content="All Of Me">
 <meta property="og:description" content="该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的contentSize新建工程在Storyboard中的View Controller的view中拖入一个scrollView,并在scrollView中添加一个UIView，层级关系如下图(包含所有添加的约束条件)">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/1.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/2.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/3.png">
-<meta property="og:updated_time" content="2016-06-12T02:13:54.000Z">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/ScrollViewAutoLayout/1.png">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/ScrollViewAutoLayout/2.png">
+<meta property="og:image" content="https://lifestyle1.cn/Resource/Image/ScrollViewAutoLayout/3.png">
+<meta property="og:updated_time" content="2020-09-25T09:45:40.337Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ScrollView自动布局">
 <meta name="twitter:description" content="该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的contentSize新建工程在Storyboard中的View Controller的view中拖入一个scrollView,并在scrollView中添加一个UIView，层级关系如下图(包含所有添加的约束条件)">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/1.png">
+<meta name="twitter:image" content="https://lifestyle1.cn/Resource/Image/ScrollViewAutoLayout/1.png">
   
     <link rel="alternative" href="/atom.xml" title="All Of Me" type="application/atom+xml">
   
@@ -75,7 +75,7 @@
 						<li>Tags</li>
 						
 						
-						<li>Über</li>
+						<li>About</li>
 						
 					</ul>
 				</div>
@@ -221,15 +221,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="该篇文章将讲述对UIScrollView如何运用autoLayout-结合实例，根据显示的内容，自动调整scrollView的contentSize"><a href="#该篇文章将讲述对UIScrollView如何运用autoLayout-结合实例，根据显示的内容，自动调整scrollView的contentSize" class="headerlink" title="该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的contentSize"></a>该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的contentSize</h2><h3 id="新建工程"><a href="#新建工程" class="headerlink" title="新建工程"></a>新建工程</h3><h3 id="在Storyboard中的View-Controller的view中拖入一个scrollView-并在scrollView中添加一个UIView，层级关系如下图-包含所有添加的约束条件"><a href="#在Storyboard中的View-Controller的view中拖入一个scrollView-并在scrollView中添加一个UIView，层级关系如下图-包含所有添加的约束条件" class="headerlink" title="在Storyboard中的View Controller的view中拖入一个scrollView,并在scrollView中添加一个UIView，层级关系如下图(包含所有添加的约束条件)"></a>在Storyboard中的View Controller的view中拖入一个scrollView,并在scrollView中添加一个UIView，层级关系如下图(包含所有添加的约束条件)</h3><p><img style="display:block;width:80%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/1.png" alt="constrait"><br><a id="more"></a></p>
+        <h2 id="该篇文章将讲述对UIScrollView如何运用autoLayout-结合实例，根据显示的内容，自动调整scrollView的contentSize"><a href="#该篇文章将讲述对UIScrollView如何运用autoLayout-结合实例，根据显示的内容，自动调整scrollView的contentSize" class="headerlink" title="该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的contentSize"></a>该篇文章将讲述对UIScrollView如何运用autoLayout, 结合实例，根据显示的内容，自动调整scrollView的contentSize</h2><h3 id="新建工程"><a href="#新建工程" class="headerlink" title="新建工程"></a>新建工程</h3><h3 id="在Storyboard中的View-Controller的view中拖入一个scrollView-并在scrollView中添加一个UIView，层级关系如下图-包含所有添加的约束条件"><a href="#在Storyboard中的View-Controller的view中拖入一个scrollView-并在scrollView中添加一个UIView，层级关系如下图-包含所有添加的约束条件" class="headerlink" title="在Storyboard中的View Controller的view中拖入一个scrollView,并在scrollView中添加一个UIView，层级关系如下图(包含所有添加的约束条件)"></a>在Storyboard中的View Controller的view中拖入一个scrollView,并在scrollView中添加一个UIView，层级关系如下图(包含所有添加的约束条件)</h3><p><img style="display:block;width:80%;" src="https://lifestyle1.cn/Resource/Image/ScrollViewAutoLayout/1.png" alt="constrait"><br><a id="more"></a></p>
 <h3 id="为ScrollView-Scroll-View-和UIView-Content-View-添加限制条件"><a href="#为ScrollView-Scroll-View-和UIView-Content-View-添加限制条件" class="headerlink" title="为ScrollView(Scroll View)和UIView(Content View)添加限制条件"></a>为ScrollView(Scroll View)和UIView(Content View)添加限制条件</h3><ol>
-<li>为ScrollView添加相对于父视图的上下左右约束，如下图<br><img style="display:block;width:80%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/2.png" alt="constrait"></li>
+<li>为ScrollView添加相对于父视图的上下左右约束，如下图<br><img style="display:block;width:80%;" src="https://lifestyle1.cn/Resource/Image/ScrollViewAutoLayout/2.png" alt="constrait"></li>
 </ol>
 <blockquote>
 <p>这里的约束为左右边界和父视图相等，这里虽为-16，但是scrollView的的宽度和父视图是相等的，在添加leading 和trailing限制条件的时候，取消Constrain to margins选项，leading和trailing可以为0，效果和-16一样。这四个限制条件确定了scroll view的frame</p>
 </blockquote>
 <ol>
-<li>为Content View添加约束，如下图<br><img style="display:block;width:80%;" src="https://raw.githubusercontent.com/JustinYangJing/Resource/master/Image/ScrollViewAutoLayout/3.png" alt="constrait"></li>
+<li>为Content View添加约束，如下图<br><img style="display:block;width:80%;" src="https://lifestyle1.cn/Resource/Image/ScrollViewAutoLayout/3.png" alt="constrait"></li>
 </ol>
 <blockquote>
 <p>分别添加Content View的leading，top,bottom,trailing限制条件，设置为和父视图相等(scroll view),这里看起来是设置content view在scroll view中的frame,  苹果公司对在scroll view中添加的这四个约束做了变化，它不是确定content view的尺寸，而是确定content view对于scroll view四周的留白。</p>
